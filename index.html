@@ -4,31 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IHMS - Controle Industrial COCA-COLA FEMSA</title>
+    <!-- Fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Ícones FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         /* DIRETRIZES DE DESIGN DE SINALIZAÇÃO INDUSTRIAL */
         :root {
-            --bg-base: #000000;       /* Preto absoluto de fundo */
-            --bg-panel: #141414;      /* Painéis de controle escuros */
-            --bg-sidebar: #0a0a0a;    /* Menu lateral escuro */
-            --border-panel: #262626;  /* Bordas estruturais discretas */
-            --text-main: #ffffff;     /* Texto de leitura rápida */
-            --text-muted: #737373;    /* Labels secundárias */
-            --accent-red: #e50914;    /* Vermelho Padrão Coca-Cola */
-            --accent-green: #00cc66;  /* Linha Operando / CIP Concluído */
-            --accent-purple: #8a2be2; /* Categoria de Produto A */
-            --accent-orange: #ff8c00; /* Categoria de Produto B */
+            --bg-base: #000000;
+            --bg-panel: #141414;
+            --bg-sidebar: #0a0a0a;
+            --border-panel: #262626;
+            --text-main: #ffffff;
+            --text-muted: #737373;
+            --accent-red: #e50914;
+            --accent-green: #00cc66;
+            --accent-purple: #8a2be2;
+            --accent-orange: #ff8c00;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Urbanist', sans-serif;
@@ -56,12 +54,7 @@
             margin-bottom: 20px;
         }
 
-        .logo-area h1 {
-            font-size: 32px;
-            color: var(--accent-red);
-            letter-spacing: 2px;
-        }
-
+        .logo-area h1 { font-size: 32px; color: var(--accent-red); letter-spacing: 2px; }
         .logo-area p {
             font-size: 11px;
             color: var(--text-muted);
@@ -71,12 +64,7 @@
             margin-top: 5px;
         }
 
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            padding: 0 10px;
-        }
+        .nav-menu { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; }
 
         .nav-btn {
             background: transparent;
@@ -94,17 +82,8 @@
             gap: 15px;
         }
 
-        .nav-btn i {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .nav-btn:hover {
-            background-color: rgba(38, 38, 38, 0.4);
-            color: var(--text-main);
-        }
-
+        .nav-btn i { font-size: 18px; width: 24px; text-align: center; }
+        .nav-btn:hover { background-color: rgba(38, 38, 38, 0.4); color: var(--text-main); }
         .nav-btn.active {
             background-color: var(--border-panel);
             color: var(--accent-red);
@@ -133,11 +112,7 @@
             z-index: 5;
         }
 
-        .view-title {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
+        .view-title { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
 
         .plant-tag {
             font-family: 'Azeret Mono', monospace;
@@ -148,22 +123,15 @@
             border-radius: 4px;
             background: #0a0a0a;
         }
-
-        .plant-tag span {
-            color: var(--accent-red);
-            font-weight: 700;
-        }
+        .plant-tag span { color: var(--accent-red); font-weight: 700; }
 
         /* 3. SEÇÕES SPA */
         .view-section {
             display: none;
             padding: 40px;
-            animation: cubic-bezier(0.4, 0, 0.2, 1) fadeIn 0.3s;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .view-section.active {
-            display: block;
-        }
+        .view-section.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
@@ -176,7 +144,7 @@
             gap: 25px;
         }
 
-        /* 4. DESIGN DOS TANQUES METÁLICOS (INOX) */
+        /* 4. NOVO DESIGN DOS TANQUES METÁLICOS (INTEIRIÇOS) */
         .tank-card {
             background-color: var(--bg-panel);
             border: 1px solid var(--border-panel);
@@ -198,106 +166,68 @@
             padding-bottom: 10px;
         }
 
-        .tank-name {
-            font-size: 20px;
-            font-weight: 700;
-            font-family: 'Azeret Mono', monospace;
-        }
+        .tank-name { font-size: 20px; font-weight: 700; font-family: 'Azeret Mono', monospace; }
+        .tank-cap { font-family: 'Azeret Mono', monospace; font-size: 11px; color: var(--text-muted); }
 
-        .tank-cap {
-            font-family: 'Azeret Mono', monospace;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* Conjunto do Ativo Tanque + Visor Lateral */
-        .tank-assembly {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            width: 100%;
-            justify-content: center;
-        }
-
-        /* Corpo Cilíndrico de Inox */
+        /* Corpo Cilíndrico de Inox Inteiriço */
         .tank-inox-body {
-            width: 110px;
-            height: 200px;
-            background: linear-gradient(90deg, #1f1f1f 0%, #525252 25%, #737373 50%, #3a3a3a 75%, #141414 100%);
+            width: 160px;
+            height: 240px;
+            background: linear-gradient(90deg, #2a2a2a 0%, #5a5a5a 25%, #808080 50%, #4a4a4a 75%, #1f1f1f 100%);
             border: 2px solid #555555;
-            border-radius: 20px 20px 8px 8px;
+            border-radius: 15px; /* Sem divisões horizontais */
             position: relative;
-            box-shadow: shadow-plate 5px 5px 15px rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.6);
+            margin-bottom: 25px;
         }
 
-        /* Detalhes de Solda e Chapas de Inox */
-        .tank-inox-body::before {
-            content: '';
+        /* Tubo Visor Embutido na Esquerda */
+        .tank-glass-gauge-inner {
             position: absolute;
-            width: 100%;
-            height: 2px;
-            background: #2b2b2b;
-            top: 33%;
-            border-bottom: 1px solid #777;
-        }
-        .tank-inox-body::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: #2b2b2b;
-            top: 66%;
-            border-bottom: 1px solid #777;
-        }
-
-        /* Tubo Visor de Vidro Lateral */
-        .tank-glass-gauge {
-            width: 12px;
-            height: 180px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #404040;
-            border-radius: 4px;
-            position: relative;
-            padding: 1px;
+            left: 15px;
+            top: 15px;
+            bottom: 15px;
+            width: 18px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 2px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
         }
 
         .gauge-liquid {
             position: absolute;
-            bottom: 1px;
-            left: 1px;
-            width: calc(100% - 2px);
-            border-radius: 2px;
+            bottom: 2px;
+            left: 2px;
+            width: calc(100% - 4px);
+            border-radius: 6px;
             transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Cores dos fluidos no visor */
-        .liquid-red { background: linear-gradient(90deg, #990000, #e50914, #ff4d4d); box-shadow: 0 0 8px rgba(229,9,20,0.4); }
-        .liquid-orange { background: linear-gradient(90deg, #cc6600, #ff8c00, #ffb366); box-shadow: 0 0 8px rgba(255,140,0,0.4); }
-        .liquid-purple { background: linear-gradient(90deg, #591da8, #8a2be2, #b366ff); box-shadow: 0 0 8px rgba(138,43,226,0.4); }
+        /* Cores dos fluidos */
+        .liquid-red { background: linear-gradient(90deg, #990000, #e50914, #ff4d4d); box-shadow: 0 0 10px rgba(229,9,20,0.5); }
+        .liquid-orange { background: linear-gradient(90deg, #cc6600, #ff8c00, #ffb366); box-shadow: 0 0 10px rgba(255,140,0,0.5); }
+        .liquid-purple { background: linear-gradient(90deg, #591da8, #8a2be2, #b366ff); box-shadow: 0 0 10px rgba(138,43,226,0.5); }
         .liquid-empty { background: transparent; }
 
-        .display-percent {
+        /* Porcentagem Embutida */
+        .display-percent-inner {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
             font-family: 'Azeret Mono', monospace;
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 700;
-            background: #000;
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid #333;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #444;
             color: #fff;
         }
 
         /* Painel de dados do ativo */
-        .tank-data {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .tank-data { width: 100%; display: flex; flex-direction: column; gap: 8px; }
 
         .data-row {
             display: flex;
@@ -309,20 +239,10 @@
             border: 1px solid #1c1c1c;
         }
 
-        .data-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .data-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-value { font-family: 'Azeret Mono', monospace; font-size: 13px; font-weight: 700; }
 
-        .data-value {
-            font-family: 'Azeret Mono', monospace;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        /* 5. DIAGRAMAS SINÓTICOS DAS ENCHEDORAS */
+        /* 5. DIAGRAMAS SINÓTICOS DAS ENCHEDORAS (CAIXA ÚNICA) */
         .line-panel-container {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
@@ -342,84 +262,118 @@
             position: relative;
         }
 
-        /* Planta Industrial - Desenho Técnico via CSS */
+        /* Caixa Central Grande */
         .machine-block-layout {
             display: flex;
             align-items: center;
-            justify-content: space-around;
+            justify-content: center;
             position: relative;
-            padding: 40px 0;
+            padding: 20px 0;
             background: #0a0a0a;
             border: 1px dashed #333;
             border-radius: 8px;
+            height: 380px;
         }
 
         .conveyor-belt {
             position: absolute;
             width: 100%;
-            height: 8px;
+            height: 12px;
             background: #262626;
-            bottom: 45px;
+            bottom: 40px;
             left: 0;
             z-index: 1;
+            border-top: 2px solid #404040;
         }
 
-        .industrial-module {
-            width: 100px;
-            height: 140px;
-            background: linear-gradient(180deg, #262626, #171717);
-            border: 2px solid #404040;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            position: relative;
-            z-index: 2;
-        }
-
-        .module-tag {
-            font-family: 'Azeret Mono', monospace;
-            font-size: 10px;
-            color: var(--text-muted);
-            background: #000;
-            padding: 2px 6px;
-            border-radius: 3px;
-        }
-
-        /* Carrossel Rotativo Enchedora PET */
-        .rotary-filler-core {
-            width: 70px;
-            height: 70px;
-            border: 4px dashed var(--accent-red);
-            border-radius: 50%;
-            animation: spin 12s linear infinite;
+        .large-filler-module {
+            width: 320px;
+            height: 320px;
+            background: linear-gradient(180deg, #1f1f1f, #111111);
+            border: 2px solid #444;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+        }
+
+        .module-tag {
+            position: absolute;
+            top: -12px;
+            font-family: 'Azeret Mono', monospace;
+            font-size: 12px;
+            color: #fff;
+            background: var(--accent-red);
+            padding: 4px 12px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        /* Carrossel de Garrafas PET (10 Garrafas) */
+        .pet-carousel {
+            width: 220px;
+            height: 220px;
+            border: 3px dashed #555;
+            border-radius: 50%;
+            position: relative;
+            animation: spin 15s linear infinite;
+        }
+
+        .pet-bottle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 28px;
+            color: var(--accent-red);
+            /* O cálculo distribui 10 garrafas perfeitamente em 360 graus */
+            transform: translate(-50%, -50%) rotate(calc(36deg * var(--i))) translateY(-95px);
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Torre de Envase Vertical Asséptico (Kapo) */
-        .vertical-tower-core {
-            width: 40px;
-            height: 110px;
-            background: linear-gradient(90deg, #333, #555, #222);
-            border: 1px solid #666;
+        /* Carrossel Vertical Kapo (5 Triângulos) */
+        .kapo-carousel {
+            width: 120px;
+            height: 240px;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 8px;
             position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
         }
 
-        .injection-nozzle {
+        .kapo-triangle {
             position: absolute;
-            width: 8px;
-            height: 25px;
-            background: var(--accent-orange);
-            bottom: -15px;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 35px solid var(--accent-orange);
             left: 50%;
             transform: translateX(-50%);
+            animation: vertical-drop 5s linear infinite;
+            top: -50px;
         }
+
+        @keyframes vertical-drop {
+            0% { top: -40px; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 260px; opacity: 0; }
+        }
+
+        /* Cores Dinâmicas por Linha */
+        #view-linha5 .module-tag { background: var(--accent-orange); color: #000; }
+        #view-linha6 .module-tag { background: var(--accent-purple); }
+        #view-linha6 .pet-bottle { color: var(--accent-purple); }
+        #view-linha7 .module-tag { background: var(--accent-green); color: #000; }
+        #view-linha7 .pet-bottle { color: var(--accent-green); }
 
         /* 6. PAINEL DE CONTROLE DE CIP DE LINHA */
         .cip-control-card {
@@ -444,22 +398,14 @@
             padding-bottom: 10px;
         }
 
-        .cip-field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .cip-grid-half {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+        .cip-field-group { display: flex; flex-direction: column; gap: 12px; }
+        .cip-grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     </style>
 </head>
 <body>
 
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="logo-area">
             <h1>IHMS</h1>
@@ -490,50 +436,69 @@
         </nav>
     </aside>
 
+    <!-- ÁREA PRINCIPAL -->
     <main class="main-content">
         <header class="top-header">
             <h2 class="view-title" id="header-title">Módulo Quase-Xarope (TQs 510-517)</h2>
             <div class="plant-tag">PLANTA: <span>COCA-COLA FEMSA - MARINGÁ</span></div>
         </header>
 
+        <!-- VIEW: QUASE-XAROPE -->
         <section id="view-qx" class="view-section active">
             <div class="tank-grid" id="grid-qx"></div>
         </section>
 
+        <!-- VIEW: BEBIDAS -->
         <section id="view-bebidas" class="view-section">
             <div class="tank-grid" id="grid-bebidas"></div>
         </section>
 
+        <!-- LINHA 4 (PET) -->
         <section id="view-linha4" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
-                    <div style="margin-bottom:20px; font-weight:700;">DIAGRAMA SINÓTICO - TRIBLOCO ROTATIVO PET</div>
+                    <div style="margin-bottom:20px; font-weight:700;">DIAGRAMA SINÓTICO - ENVASE PET</div>
                     <div class="machine-block-layout">
                         <div class="conveyor-belt"></div>
-                        <div class="industrial-module"><span class="module-tag">RINSER</span><i class="fa-solid fa-faucet-drip" style="color:#555;font-size:24px;"></i><div></div></div>
-                        <div class="industrial-module">
-                            <span class="module-tag">ENCHEDORA</span>
-                            <div class="rotary-filler-core"><i class="fa-solid fa-valve" style="color:var(--accent-red)"></i></div>
+                        <div class="large-filler-module">
+                            <span class="module-tag">ENCHEDORA ROTATIVA</span>
+                            <div class="pet-carousel">
+                                <!-- 10 Garrafas geradas via estilo inline -->
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
+                            </div>
                         </div>
-                        <div class="industrial-module"><span class="module-tag">TAMPADORA</span><i class="fa-solid fa-screwdriver-Wrench" style="color:#555;font-size:24px;"></i><div></div></div>
                     </div>
                 </div>
                 <div id="cip-panel-linha4" class="cip-control-card"></div>
             </div>
         </section>
 
+        <!-- LINHA 5 (KAPO) -->
         <section id="view-linha5" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
-                    <div style="margin-bottom:20px; font-weight:700;">DIAGRAMA SINÓTICO - ENVASE ASSÉPTICO VERTICAL (KAPO)</div>
+                    <div style="margin-bottom:20px; font-weight:700;">DIAGRAMA SINÓTICO - ENVASE ASSÉPTICO KAPO</div>
                     <div class="machine-block-layout">
                         <div class="conveyor-belt"></div>
-                        <div class="industrial-module" style="width:130px; height:160px;">
+                        <div class="large-filler-module">
                             <span class="module-tag">TORRE ESTÉRIL</span>
-                            <div class="vertical-tower-core">
-                                <div class="injection-nozzle"></div>
+                            <div class="kapo-carousel">
+                                <!-- 5 Triângulos descendo com delay -->
+                                <div class="kapo-triangle" style="animation-delay: 0s;"></div>
+                                <div class="kapo-triangle" style="animation-delay: 1s;"></div>
+                                <div class="kapo-triangle" style="animation-delay: 2s;"></div>
+                                <div class="kapo-triangle" style="animation-delay: 3s;"></div>
+                                <div class="kapo-triangle" style="animation-delay: 4s;"></div>
                             </div>
-                            <span style="font-size:9px; color:var(--accent-orange); font-family:'Azeret Mono'">CONEXÃO CIP OK</span>
                         </div>
                     </div>
                 </div>
@@ -541,36 +506,56 @@
             </div>
         </section>
 
+        <!-- LINHA 6 (PET) -->
         <section id="view-linha6" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
-                    <div style="margin-bottom:20px; font-weight:700;">DIAGRAMA SINÓTICO - TRIBLOCO ROTATIVO PET</div>
+                    <div style="margin-bottom:20px; font-weight:700;">DIAGRAMA SINÓTICO - ENVASE PET</div>
                     <div class="machine-block-layout">
                         <div class="conveyor-belt"></div>
-                        <div class="industrial-module"><span class="module-tag">RINSER</span><i class="fa-solid fa-faucet-drip" style="color:#555;font-size:24px;"></i><div></div></div>
-                        <div class="industrial-module">
-                            <span class="module-tag">ENCHEDORA</span>
-                            <div class="rotary-filler-core"><i class="fa-solid fa-valve" style="color:var(--accent-purple)"></i></div>
+                        <div class="large-filler-module">
+                            <span class="module-tag">ENCHEDORA ROTATIVA</span>
+                            <div class="pet-carousel">
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
+                            </div>
                         </div>
-                        <div class="industrial-module"><span class="module-tag">TAMPADORA</span><i class="fa-solid fa-screwdriver-wrench" style="color:#555;font-size:24px;"></i><div></div></div>
                     </div>
                 </div>
                 <div id="cip-panel-linha6" class="cip-control-card"></div>
             </div>
         </section>
 
+        <!-- LINHA 7 (PET) -->
         <section id="view-linha7" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
-                    <div style="margin-bottom:20px; font-weight:700;">DIAGRAMA SINÓTICO - TRIBLOCO ROTATIVO PET</div>
+                    <div style="margin-bottom:20px; font-weight:700;">DIAGRAMA SINÓTICO - ENVASE PET</div>
                     <div class="machine-block-layout">
                         <div class="conveyor-belt"></div>
-                        <div class="industrial-module"><span class="module-tag">RINSER</span><i class="fa-solid fa-faucet-drip" style="color:#555;font-size:24px;"></i><div></div></div>
-                        <div class="industrial-module">
-                            <span class="module-tag">ENCHEDORA</span>
-                            <div class="rotary-filler-core"><i class="fa-solid fa-valve" style="color:var(--accent-orange)"></i></div>
+                        <div class="large-filler-module">
+                            <span class="module-tag">ENCHEDORA ROTATIVA</span>
+                            <div class="pet-carousel">
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i>
+                                <i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
+                            </div>
                         </div>
-                        <div class="industrial-module"><span class="module-tag">TAMPADORA</span><i class="fa-solid fa-screwdriver-wrench" style="color:#555;font-size:24px;"></i><div></div></div>
                     </div>
                 </div>
                 <div id="cip-panel-linha7" class="cip-control-card"></div>
@@ -578,8 +563,8 @@
         </section>
     </main>
 
+    <!-- PROCESSAMENTO -->
     <script>
-        // DATA ARRAYS DE ATIVOS (INOX)
         const dataQX = [
             { id: '510', max: 32000, vol: 24500, prod: 'Coca-Cola Regular', batch: 'B-8801', cat: 'X' },
             { id: '511', max: 32000, vol: 16000, prod: 'Fanta Laranja',    batch: 'B-8802', cat: 'B' },
@@ -597,15 +582,13 @@
             { id: '703', max: 10000, vol: 7800,  prod: 'Xarope Fanta Laranja',batch: 'P-9013', cat: 'B' }
         ];
 
-        // DATA ESTRUTURA PARA LINHAS COM CONTROLE CIP INTEGRADO
         const dataLinhas = {
-            linha4: { batch: 'P-8041', prod: 'Coca-Cola PET 2L', cap: '18.000 G/H', status: 'PRODUÇÃO', cip: { etapa: 'Aguardando Término do Batch', quimico: 'Nenhum / Água de Processo', inicio: '--:--', fim: '--:--', conc: '0.00%' } },
-            linha5: { batch: 'K-7051', prod: 'Kapo Uva 200ml', cap: '24.000 P/H', status: 'CIP ATIVO', cip: { etapa: 'Circulação de Detergente Ácido', quimico: 'Ácido Peracético (C2H4O3)', inicio: '01:15', fim: '02:00', conc: '1.20%' } },
-            linha6: { batch: 'P-8061', prod: 'Fanta Laranja 1.5L', cap: '16.000 G/H', status: 'PRODUÇÃO', cip: { etapa: 'Sanitização Concluída', quimico: 'Detergente Alcalino (Sanitizado)', inicio: '22:00', fim: '23:15', conc: '2.10%' } },
-            linha7: { batch: 'P-8071', prod: 'Sprite PET 2.25L', cap: '17.500 G/H', status: 'PRODUÇÃO', cip: { etapa: 'Aguardando Calibração', quimico: '-', inicio: '--:--', fim: '--:--', conc: '0.00%' } }
+            linha4: { status: 'PRODUÇÃO', cip: { etapa: 'Aguardando Término do Batch', quimico: 'Nenhum / Água', inicio: '--:--', fim: '--:--', conc: '0.00%' }, cap: '18.000 G/H' },
+            linha5: { status: 'CIP ATIVO', cip: { etapa: 'Circulação Ácida', quimico: 'Ácido Peracético', inicio: '01:15', fim: '02:00', conc: '1.20%' }, cap: '24.000 P/H' },
+            linha6: { status: 'PRODUÇÃO', cip: { etapa: 'Sanitização Concluída', quimico: 'Detergente Alcalino', inicio: '22:00', fim: '23:15', conc: '2.10%' }, cap: '16.000 G/H' },
+            linha7: { status: 'PRODUÇÃO', cip: { etapa: 'Aguardando Calibração', quimico: '-', inicio: '--:--', fim: '--:--', conc: '0.00%' }, cap: '17.500 G/H' }
         };
 
-        // RENDERING DOS TANQUES COM VISOR DE VIDRO LATERAL
         function renderTanks(containerId, tanksData) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -628,13 +611,11 @@
                             <span class="tank-cap">CAP: ${maxFormatted}L</span>
                         </div>
                         
-                        <div class="tank-assembly">
-                            <div class="tank-inox-body">
-                                <div class="display-percent">${percent}%</div>
-                            </div>
-                            <div class="tank-glass-gauge">
+                        <div class="tank-inox-body">
+                            <div class="tank-glass-gauge-inner">
                                 <div class="gauge-liquid ${liquidClass}" style="height: ${percent}%;"></div>
                             </div>
+                            <div class="display-percent-inner">${percent}%</div>
                         </div>
 
                         <div class="tank-data">
@@ -656,7 +637,6 @@
             });
         }
 
-        // RENDERING COMPLETO DO PAINEL DE CIP DA LINHA
         function renderCipPanel(panelId, lineData) {
             const panel = document.getElementById(panelId);
             panel.innerHTML = `
@@ -698,7 +678,6 @@
             `;
         }
 
-        // CONTROLADORES DE INTERFACE SPA
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -726,7 +705,6 @@
             const numLinha = lineKey.replace('linha', '');
             document.getElementById('header-title').innerText = `Controle de Processo - Linha ${numLinha}`;
             
-            // Renderiza o painel de CIP específico desta linha
             renderCipPanel('cip-panel-' + lineKey, dataLinhas[lineKey]);
         }
 
