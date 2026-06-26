@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IHMS - Controle Industrial COCA-COLA FEMSA</title>
-    <!-- Fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Ícones FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -144,7 +142,7 @@
             gap: 25px;
         }
 
-        /* 4. NOVO DESIGN DOS TANQUES METÁLICOS (INTEIRIÇOS) */
+        /* 4. TANQUES METÁLICOS */
         .tank-card {
             background-color: var(--bg-panel);
             border: 1px solid var(--border-panel);
@@ -169,19 +167,17 @@
         .tank-name { font-size: 20px; font-weight: 700; font-family: 'Azeret Mono', monospace; }
         .tank-cap { font-family: 'Azeret Mono', monospace; font-size: 11px; color: var(--text-muted); }
 
-        /* Corpo Cilíndrico de Inox Inteiriço */
         .tank-inox-body {
             width: 160px;
             height: 240px;
             background: linear-gradient(90deg, #2a2a2a 0%, #5a5a5a 25%, #808080 50%, #4a4a4a 75%, #1f1f1f 100%);
             border: 2px solid #555555;
-            border-radius: 15px; /* Sem divisões horizontais */
+            border-radius: 15px; 
             position: relative;
             box-shadow: 8px 8px 20px rgba(0,0,0,0.6);
             margin-bottom: 25px;
         }
 
-        /* Tubo Visor Embutido na Esquerda */
         .tank-glass-gauge-inner {
             position: absolute;
             left: 15px;
@@ -204,13 +200,11 @@
             transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Cores dos fluidos */
         .liquid-red { background: linear-gradient(90deg, #990000, #e50914, #ff4d4d); box-shadow: 0 0 10px rgba(229,9,20,0.5); }
         .liquid-orange { background: linear-gradient(90deg, #cc6600, #ff8c00, #ffb366); box-shadow: 0 0 10px rgba(255,140,0,0.5); }
         .liquid-purple { background: linear-gradient(90deg, #591da8, #8a2be2, #b366ff); box-shadow: 0 0 10px rgba(138,43,226,0.5); }
         .liquid-empty { background: transparent; }
 
-        /* Porcentagem Embutida */
         .display-percent-inner {
             position: absolute;
             right: 25px;
@@ -226,7 +220,6 @@
             color: #fff;
         }
 
-        /* Painel de dados do ativo */
         .tank-data { width: 100%; display: flex; flex-direction: column; gap: 8px; }
 
         .data-row {
@@ -242,7 +235,7 @@
         .data-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .data-value { font-family: 'Azeret Mono', monospace; font-size: 13px; font-weight: 700; }
 
-        /* 5. DIAGRAMAS SINÓTICOS DAS ENCHEDORAS (CAIXA ÚNICA) */
+        /* 5. DIAGRAMAS SINÓTICOS DAS ENCHEDORAS */
         .line-panel-container {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
@@ -255,22 +248,20 @@
             border: 1px solid var(--border-panel);
             border-radius: 12px;
             padding: 30px;
-            min-height: 460px;
+            min-height: 480px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             position: relative;
         }
 
-        /* Caixa Central Grande */
         .machine-block-layout {
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             padding: 20px 0;
-            background: #0a0a0a;
-            border: 1px dashed #333;
+            background: #050505;
             border-radius: 8px;
             height: 380px;
         }
@@ -286,37 +277,63 @@
             border-top: 2px solid #404040;
         }
 
+        /* NOVA CABINE DA ENCHEDORA (VISUAL INOX + ACRÍLICO) */
         .large-filler-module {
-            width: 320px;
-            height: 320px;
-            background: linear-gradient(180deg, #1f1f1f, #111111);
+            width: 380px;
+            height: 340px;
+            background: linear-gradient(145deg, #222 0%, #111 50%, #1a1a1a 100%);
             border: 2px solid #444;
-            border-radius: 16px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             z-index: 2;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.6);
+            /* Proteções laterais de acrílico/vidro fumê */
+            border-left: 20px solid rgba(255, 255, 255, 0.03);
+            border-right: 20px solid rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+        }
+
+        /* Viga superior Inox */
+        .large-filler-module::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 25px;
+            background: linear-gradient(90deg, #444, #666, #444);
+            border-bottom: 2px solid #222;
+            z-index: 5;
+        }
+
+        /* Base inferior Inox */
+        .large-filler-module::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 25px;
+            background: linear-gradient(90deg, #333, #555, #333);
+            border-top: 2px solid #111;
+            z-index: 5;
         }
 
         .module-tag {
             position: absolute;
-            top: -12px;
+            top: 3px;
+            z-index: 6;
             font-family: 'Azeret Mono', monospace;
-            font-size: 12px;
+            font-size: 11px;
             color: #fff;
             background: var(--accent-red);
-            padding: 4px 12px;
+            padding: 2px 12px;
             border-radius: 4px;
             letter-spacing: 1px;
             font-weight: 700;
         }
 
-        /* Carrossel de Garrafas PET (10 Garrafas) */
+        /* Carrossel PET (10 Garrafas) */
         .pet-carousel {
-            width: 220px;
-            height: 220px;
+            width: 240px;
+            height: 240px;
             border: 3px dashed #555;
             border-radius: 50%;
             position: relative;
@@ -329,43 +346,58 @@
             left: 50%;
             font-size: 28px;
             color: var(--accent-red);
-            /* O cálculo distribui 10 garrafas perfeitamente em 360 graus */
-            transform: translate(-50%, -50%) rotate(calc(36deg * var(--i))) translateY(-95px);
+            transform: translate(-50%, -50%) rotate(calc(36deg * var(--i))) translateY(-105px);
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Carrossel Vertical Kapo (5 Triângulos) */
+        /* Carrossel Kapo */
         .kapo-carousel {
-            width: 120px;
-            height: 240px;
-            background: #0a0a0a;
-            border: 2px solid #333;
-            border-radius: 8px;
+            width: 140px;
+            height: 260px;
+            background: rgba(0,0,0,0.5);
+            border-left: 2px dashed #444;
+            border-right: 2px dashed #444;
             position: relative;
             overflow: hidden;
             display: flex;
             justify-content: center;
         }
 
-        .kapo-triangle {
+        /* NOVO DESIGN: Pouch Stand-up Kapo */
+        .kapo-pouch {
             position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-bottom: 35px solid var(--accent-orange);
+            width: 32px;
+            height: 48px;
+            /* Topo prateado simulando o lacre, resto roxo */
+            background: linear-gradient(180deg, #aaa 15%, var(--accent-purple) 15%);
+            border-radius: 3px 3px 6px 6px;
             left: 50%;
             transform: translateX(-50%);
-            animation: vertical-drop 5s linear infinite;
-            top: -50px;
+            animation: vertical-drop 4s linear infinite;
+            top: -60px;
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.4), 0 5px 10px rgba(0,0,0,0.5);
+        }
+
+        /* Detalhe do furinho do canudo */
+        .kapo-pouch::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.8;
         }
 
         @keyframes vertical-drop {
-            0% { top: -40px; opacity: 0; }
+            0% { top: -50px; opacity: 0; }
             10% { opacity: 1; }
             90% { opacity: 1; }
-            100% { top: 260px; opacity: 0; }
+            100% { top: 280px; opacity: 0; }
         }
 
         /* Cores Dinâmicas por Linha */
@@ -375,7 +407,7 @@
         #view-linha7 .module-tag { background: var(--accent-green); color: #000; }
         #view-linha7 .pet-bottle { color: var(--accent-green); }
 
-        /* 6. PAINEL DE CONTROLE DE CIP DE LINHA */
+        /* 6. PAINEL DE CIP (ATUALIZADO COM DET/SAN) */
         .cip-control-card {
             background-color: var(--bg-panel);
             border: 1px solid var(--border-panel);
@@ -405,55 +437,33 @@
 </head>
 <body>
 
-    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="logo-area">
             <h1>IHMS</h1>
             <p>Sistemas de Supervisão</p>
         </div>
         <nav class="nav-menu">
-            <button class="nav-btn active" onclick="switchView('qx')" id="btn-qx">
-                <i class="fa-solid fa-industry"></i> Quase-Xarope
-            </button>
-            <button class="nav-btn" onclick="switchView('bebidas')" id="btn-bebidas">
-                <i class="fa-solid fa-tank-water"></i> Módulo Bebidas
-            </button>
+            <button class="nav-btn active" onclick="switchView('qx')" id="btn-qx"><i class="fa-solid fa-industry"></i> Quase-Xarope</button>
+            <button class="nav-btn" onclick="switchView('bebidas')" id="btn-bebidas"><i class="fa-solid fa-tank-water"></i> Módulo Bebidas</button>
             
             <div style="color: var(--text-muted); font-size: 10px; padding: 20px 20px 5px; text-transform: uppercase; letter-spacing: 1px; font-family: 'Azeret Mono', monospace;">Linhas de Envase</div>
             
-            <button class="nav-btn" onclick="switchLineView('linha4')" id="btn-linha4">
-                <i class="fa-solid fa-gears"></i> Linha 4 (PET)
-            </button>
-            <button class="nav-btn" onclick="switchLineView('linha5')" id="btn-linha5">
-                <i class="fa-solid fa-box-archive"></i> Linha 5 (Kapo)
-            </button>
-            <button class="nav-btn" onclick="switchLineView('linha6')" id="btn-linha6">
-                <i class="fa-solid fa-gears"></i> Linha 6 (PET)
-            </button>
-            <button class="nav-btn" onclick="switchLineView('linha7')" id="btn-linha7">
-                <i class="fa-solid fa-gears"></i> Linha 7 (PET)
-            </button>
+            <button class="nav-btn" onclick="switchLineView('linha4')" id="btn-linha4"><i class="fa-solid fa-gears"></i> Linha 4 (PET)</button>
+            <button class="nav-btn" onclick="switchLineView('linha5')" id="btn-linha5"><i class="fa-solid fa-box-archive"></i> Linha 5 (Kapo)</button>
+            <button class="nav-btn" onclick="switchLineView('linha6')" id="btn-linha6"><i class="fa-solid fa-gears"></i> Linha 6 (PET)</button>
+            <button class="nav-btn" onclick="switchLineView('linha7')" id="btn-linha7"><i class="fa-solid fa-gears"></i> Linha 7 (PET)</button>
         </nav>
     </aside>
 
-    <!-- ÁREA PRINCIPAL -->
     <main class="main-content">
         <header class="top-header">
             <h2 class="view-title" id="header-title">Módulo Quase-Xarope (TQs 510-517)</h2>
             <div class="plant-tag">PLANTA: <span>COCA-COLA FEMSA - MARINGÁ</span></div>
         </header>
 
-        <!-- VIEW: QUASE-XAROPE -->
-        <section id="view-qx" class="view-section active">
-            <div class="tank-grid" id="grid-qx"></div>
-        </section>
+        <section id="view-qx" class="view-section active"><div class="tank-grid" id="grid-qx"></div></section>
+        <section id="view-bebidas" class="view-section"><div class="tank-grid" id="grid-bebidas"></div></section>
 
-        <!-- VIEW: BEBIDAS -->
-        <section id="view-bebidas" class="view-section">
-            <div class="tank-grid" id="grid-bebidas"></div>
-        </section>
-
-        <!-- LINHA 4 (PET) -->
         <section id="view-linha4" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
@@ -463,7 +473,6 @@
                         <div class="large-filler-module">
                             <span class="module-tag">ENCHEDORA ROTATIVA</span>
                             <div class="pet-carousel">
-                                <!-- 10 Garrafas geradas via estilo inline -->
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i>
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i>
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i>
@@ -482,7 +491,6 @@
             </div>
         </section>
 
-        <!-- LINHA 5 (KAPO) -->
         <section id="view-linha5" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
@@ -492,12 +500,11 @@
                         <div class="large-filler-module">
                             <span class="module-tag">TORRE ESTÉRIL</span>
                             <div class="kapo-carousel">
-                                <!-- 5 Triângulos descendo com delay -->
-                                <div class="kapo-triangle" style="animation-delay: 0s;"></div>
-                                <div class="kapo-triangle" style="animation-delay: 1s;"></div>
-                                <div class="kapo-triangle" style="animation-delay: 2s;"></div>
-                                <div class="kapo-triangle" style="animation-delay: 3s;"></div>
-                                <div class="kapo-triangle" style="animation-delay: 4s;"></div>
+                                <div class="kapo-pouch" style="animation-delay: 0s;"></div>
+                                <div class="kapo-pouch" style="animation-delay: 1s;"></div>
+                                <div class="kapo-pouch" style="animation-delay: 2s;"></div>
+                                <div class="kapo-pouch" style="animation-delay: 3s;"></div>
+                                <div class="kapo-pouch" style="animation-delay: 4s;"></div>
                             </div>
                         </div>
                     </div>
@@ -506,7 +513,6 @@
             </div>
         </section>
 
-        <!-- LINHA 6 (PET) -->
         <section id="view-linha6" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
@@ -534,7 +540,6 @@
             </div>
         </section>
 
-        <!-- LINHA 7 (PET) -->
         <section id="view-linha7" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
@@ -563,7 +568,6 @@
         </section>
     </main>
 
-    <!-- PROCESSAMENTO -->
     <script>
         const dataQX = [
             { id: '510', max: 32000, vol: 24500, prod: 'Coca-Cola Regular', batch: 'B-8801', cat: 'X' },
@@ -582,11 +586,12 @@
             { id: '703', max: 10000, vol: 7800,  prod: 'Xarope Fanta Laranja',batch: 'P-9013', cat: 'B' }
         ];
 
+        // DADOS DO CIP ATUALIZADOS: Separando Detergente e Sanitizante
         const dataLinhas = {
-            linha4: { status: 'PRODUÇÃO', cip: { etapa: 'Aguardando Término do Batch', quimico: 'Nenhum / Água', inicio: '--:--', fim: '--:--', conc: '0.00%' }, cap: '18.000 G/H' },
-            linha5: { status: 'CIP ATIVO', cip: { etapa: 'Circulação Ácida', quimico: 'Ácido Peracético', inicio: '01:15', fim: '02:00', conc: '1.20%' }, cap: '24.000 P/H' },
-            linha6: { status: 'PRODUÇÃO', cip: { etapa: 'Sanitização Concluída', quimico: 'Detergente Alcalino', inicio: '22:00', fim: '23:15', conc: '2.10%' }, cap: '16.000 G/H' },
-            linha7: { status: 'PRODUÇÃO', cip: { etapa: 'Aguardando Calibração', quimico: '-', inicio: '--:--', fim: '--:--', conc: '0.00%' }, cap: '17.500 G/H' }
+            linha4: { status: 'PRODUÇÃO', cip: { etapa: 'Aguardando Término do Batch', quimico: 'Nenhum / Água', inicio: '--:--', fim: '--:--', concDet: '0.00%', concSan: '0.00%' }, cap: '18.000 G/H' },
+            linha5: { status: 'CIP ATIVO', cip: { etapa: 'Circulação Ácida', quimico: 'Ácido Peracético', inicio: '01:15', fim: '02:00', concDet: '2.50%', concSan: '1.20%' }, cap: '24.000 P/H' },
+            linha6: { status: 'PRODUÇÃO', cip: { etapa: 'Sanitização Concluída', quimico: 'Detergente Alcalino', inicio: '22:00', fim: '23:15', concDet: '2.10%', concSan: '0.50%' }, cap: '16.000 G/H' },
+            linha7: { status: 'PRODUÇÃO', cip: { etapa: 'Aguardando Calibração', quimico: '-', inicio: '--:--', fim: '--:--', concDet: '0.00%', concSan: '0.00%' }, cap: '17.500 G/H' }
         };
 
         function renderTanks(containerId, tanksData) {
@@ -595,7 +600,6 @@
 
             tanksData.forEach(tank => {
                 let percent = Math.round((tank.vol / tank.max) * 100);
-
                 let liquidClass = 'liquid-empty';
                 if (tank.cat === 'X') liquidClass = 'liquid-red';
                 else if (tank.cat === 'B') liquidClass = 'liquid-orange';
@@ -610,33 +614,23 @@
                             <span class="tank-name">TQ-${tank.id}</span>
                             <span class="tank-cap">CAP: ${maxFormatted}L</span>
                         </div>
-                        
                         <div class="tank-inox-body">
                             <div class="tank-glass-gauge-inner">
                                 <div class="gauge-liquid ${liquidClass}" style="height: ${percent}%;"></div>
                             </div>
                             <div class="display-percent-inner">${percent}%</div>
                         </div>
-
                         <div class="tank-data">
-                            <div class="data-row">
-                                <span class="data-label">Volume Real</span>
-                                <span class="data-value" style="color:var(--accent-green);">${volFormatted} L</span>
-                            </div>
-                            <div class="data-row">
-                                <span class="data-label">Produto</span>
-                                <span class="data-value" style="color:#fff; font-size:12px;">${tank.prod}</span>
-                            </div>
-                            <div class="data-row">
-                                <span class="data-label">Nº Batch</span>
-                                <span class="data-value" style="color:var(--accent-red);">${tank.batch}</span>
-                            </div>
+                            <div class="data-row"><span class="data-label">Volume Real</span><span class="data-value" style="color:var(--accent-green);">${volFormatted} L</span></div>
+                            <div class="data-row"><span class="data-label">Produto</span><span class="data-value" style="color:#fff; font-size:12px;">${tank.prod}</span></div>
+                            <div class="data-row"><span class="data-label">Nº Batch</span><span class="data-value" style="color:var(--accent-red);">${tank.batch}</span></div>
                         </div>
                     </div>
                 `;
             });
         }
 
+        // RENDER DO CIP ATUALIZADO
         function renderCipPanel(panelId, lineData) {
             const panel = document.getElementById(panelId);
             panel.innerHTML = `
@@ -651,28 +645,26 @@
                         <span class="data-value" style="color:#fff;">${lineData.cip.etapa}</span>
                     </div>
                     <div class="data-row">
-                        <span class="data-label">Agente Químico</span>
+                        <span class="data-label">Último Agente Químico</span>
                         <span class="data-value" style="color:var(--accent-purple);">${lineData.cip.quimico}</span>
                     </div>
                     <div class="cip-grid-half">
                         <div class="data-row">
-                            <span class="data-label">Concentração Target</span>
-                            <span class="data-value" style="color:#fff;">${lineData.cip.conc}</span>
+                            <span class="data-label">Conc. Detergente</span>
+                            <span class="data-value" style="color:#fff;">${lineData.cip.concDet}</span>
                         </div>
                         <div class="data-row">
-                            <span class="data-label">Volume de Linha</span>
-                            <span class="data-value" style="color:#fff;">${lineData.cap}</span>
+                            <span class="data-label">Conc. Sanitizante</span>
+                            <span class="data-value" style="color:#fff;">${lineData.cip.concSan}</span>
                         </div>
                     </div>
                     <div class="cip-grid-half">
-                        <div class="data-row">
-                            <span class="data-label">Horário Inicial</span>
-                            <span class="data-value">${lineData.cip.inicio}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Horário Final</span>
-                            <span class="data-value">${lineData.cip.fim}</span>
-                        </div>
+                        <div class="data-row"><span class="data-label">Horário Inicial</span><span class="data-value">${lineData.cip.inicio}</span></div>
+                        <div class="data-row"><span class="data-label">Horário Final</span><span class="data-value">${lineData.cip.fim}</span></div>
+                    </div>
+                    <div class="data-row" style="margin-top: 5px;">
+                        <span class="data-label">Volume de Linha</span>
+                        <span class="data-value" style="color:var(--accent-green);">${lineData.cap}</span>
                     </div>
                 </div>
             `;
@@ -708,9 +700,7 @@
             renderCipPanel('cip-panel-' + lineKey, dataLinhas[lineKey]);
         }
 
-        window.onload = function() {
-            renderTanks('grid-qx', dataQX);
-        };
+        window.onload = function() { renderTanks('grid-qx', dataQX); };
     </script>
 </body>
 </html>
