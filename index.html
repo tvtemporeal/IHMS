@@ -26,7 +26,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Urbanist', sans-serif; background-color: var(--bg-base); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* TELA DE LOGIN ABSOLUTA (CORRIGIDA) */
+        /* TELA DE LOGIN */
         #login-screen { position: fixed; top:0; left:0; width:100vw; height:100vh; background: #000; z-index: 9999; display: flex; }
         .login-diagram-side { flex: 1.2; background: #050505; border-right: 2px solid var(--border-panel); display: flex; align-items: center; justify-content: center; padding: 40px; position: relative; overflow: hidden; }
         .login-form-side { flex: 0.8; display: flex; flex-direction: column; justify-content: center; padding: 60px; background: #000; overflow-y: auto; position: relative; }
@@ -42,22 +42,17 @@
         @keyframes flow { 0% { left: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { left: 162px; opacity: 0; } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .login-title-femsa { font-size: 42px; font-weight: 700; color: var(--accent-red); letter-spacing: 1px; margin-bottom: 5px; position: relative; z-index: 2; }
-        .login-subtitle { font-size: 14px; color: var(--text-muted); text-transform: uppercase; font-family: 'Azeret Mono', monospace; margin-bottom: 40px; position: relative; z-index: 2; }
-        .input-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; position: relative; z-index: 2; }
+        .login-title-femsa { font-size: 42px; font-weight: 700; color: var(--accent-red); letter-spacing: 1px; margin-bottom: 5px; }
+        .login-subtitle { font-size: 14px; color: var(--text-muted); text-transform: uppercase; font-family: 'Azeret Mono', monospace; margin-bottom: 40px; }
+        .input-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
         .input-block label { font-size: 12px; text-transform: uppercase; color: var(--text-muted); font-family: 'Azeret Mono', monospace; }
         .login-input { background: #111; border: 1px solid #333; padding: 14px; border-radius: 8px; color: #fff; font-size: 15px; width: 100%; }
         .login-input:focus { border-color: var(--accent-red); outline: none; }
-        
-        /* CORREÇÃO DO AUTOFILL DO CHROME (Impede fundo branco nos campos de login) */
-        input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
-            -webkit-box-shadow: 0 0 0 30px #111 inset !important; -webkit-text-fill-color: white !important; transition: background-color 5000s ease-in-out 0s;
-        }
-
-        .login-btn { background: var(--accent-red); color: #fff; border: none; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; margin-top: 10px; position: relative; z-index: 2; }
+        input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{ -webkit-box-shadow: 0 0 0 30px #111 inset !important; -webkit-text-fill-color: white !important; transition: background-color 5000s ease-in-out 0s; }
+        .login-btn { background: var(--accent-red); color: #fff; border: none; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
         .login-btn:hover { background: #b8070f; }
 
-        /* NAVEGAÇÃO LATERAL (MENU) */
+        /* NAVEGAÇÃO LATERAL */
         .sidebar { width: 260px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-panel); display: flex; flex-direction: column; padding: 20px 0; z-index: 10; flex-shrink: 0; }
         .logo-area { padding: 0 20px 30px; border-bottom: 1px solid var(--border-panel); margin-bottom: 20px; }
         .logo-area h1 { font-size: 32px; color: var(--accent-red); letter-spacing: 2px; }
@@ -67,7 +62,6 @@
         .nav-btn:hover { background-color: rgba(38, 38, 38, 0.4); color: var(--text-main); }
         .nav-btn.active { background-color: var(--border-panel); color: var(--accent-red); border-left: 4px solid var(--accent-red); }
 
-        /* VISÕES DA APLICAÇÃO */
         .main-content { flex-grow: 1; display: flex; flex-direction: column; background: radial-gradient(circle at 50% 50%, #0d0d0d 0%, #000000 100%); overflow-y: auto; position: relative; }
         .top-header { padding: 25px 40px; border-bottom: 1px solid var(--border-panel); display: flex; justify-content: space-between; align-items: center; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 5; }
         #mobile-menu-btn { display: none; background: transparent; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; margin-right: 15px; }
@@ -78,19 +72,18 @@
         .view-section { display: none; padding: 40px; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* TANQUES */
         .tank-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
-
-        /* ARQUITETURA DO ATIVO (TANQUE INOX) */
         .tank-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; }
         .tank-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-panel); padding-bottom: 10px; }
         .tank-name { font-size: 20px; font-weight: 700; font-family: 'Azeret Mono', monospace; }
         .tank-cap { font-family: 'Azeret Mono', monospace; font-size: 11px; color: var(--text-muted); }
         
-        .tank-inox-body { width: 160px; height: 220px; background: linear-gradient(90deg, #2a2a2a 0%, #5a5a5a 25%, #808080 50%, #4a4a4a 75%, #1f1f1f 100%); border: 2px solid #555555; border-radius: 15px; position: relative; margin-bottom: 20px; box-shadow: 8px 8px 20px rgba(0,0,0,0.6); }
+        .tank-inox-body { width: 160px; height: 220px; background: linear-gradient(90deg, #2a2a2a 0%, #5a5a5a 25%, #808080 50%, #4a4a4a 75%, #1f1f1f 100%); border: 2px solid #555555; border-radius: 15px; position: relative; margin-bottom: 20px; box-shadow: 8px 8px 20px rgba(0,0,0,0.6); overflow: hidden; }
         .tank-glass-gauge-inner { position: absolute; left: 15px; top: 15px; bottom: 15px; width: 18px; background: rgba(0, 0, 0, 0.7); border: 1px solid #333; border-radius: 8px; padding: 2px; }
         .gauge-liquid { position: absolute; bottom: 2px; left: 2px; width: calc(100% - 4px); border-radius: 6px; transition: height 0.8s ease; }
         
-        /* CORES DINÂMICAS DE FLUIDO */
         .liquid-red { background: linear-gradient(90deg, #990000, #e50914, #ff4d4d); box-shadow: 0 0 10px rgba(229,9,20,0.5); }
         .liquid-green { background: linear-gradient(90deg, #006633, #00cc66, #33ff99); box-shadow: 0 0 10px rgba(0,204,102,0.5); }
         .liquid-orange { background: linear-gradient(90deg, #cc6600, #ff8c00, #ffb366); box-shadow: 0 0 10px rgba(255,140,0,0.5); }
@@ -98,15 +91,19 @@
         .liquid-empty { background: transparent; }
         .display-percent-inner { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-family: 'Azeret Mono', monospace; font-size: 16px; font-weight: 700; background: rgba(0, 0, 0, 0.75); padding: 6px 10px; border-radius: 6px; border: 1px solid #444; }
 
+        /* MÓDULO CIP INTERNO DO TANQUE */
+        .tank-inox-body.mode-cip .tank-glass-gauge-inner, 
+        .tank-inox-body.mode-cip .display-percent-inner { display: none; }
+        .tank-inox-body .cip-spray-system { transform: scale(0.65); transform-origin: top center; margin-top: 15px; }
+
         .tank-data { width: 100%; display: flex; flex-direction: column; gap: 6px; }
         .data-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; border: 1px solid #1c1c1c; width: 100%; }
         .data-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
         .data-value { font-family: 'Azeret Mono', monospace; font-size: 13px; font-weight: 700; text-align: right; }
-        
         .edit-tank-btn { background: #262626; border: none; color: #fff; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-top: 10px; width: 100%; font-weight: bold; transition: 0.2s; }
         .edit-tank-btn:hover { background: var(--accent-red); }
 
-        /* CABINES OPERACIONAIS DAS ENCHEDORAS */
+        /* LINHAS DE ENVASE */
         .line-panel-container { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: start; }
         .synoptic-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 30px; min-height: 480px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
         .machine-block-layout { display: flex; align-items: center; justify-content: center; position: relative; background: #050505; border-radius: 8px; height: 380px; overflow: hidden; }
@@ -116,17 +113,15 @@
         .large-filler-module::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 25px; background: linear-gradient(90deg, #444, #666, #444); border-bottom: 2px solid #222; z-index: 5; }
         .large-filler-module::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 25px; background: linear-gradient(90deg, #333, #555, #333); border-top: 2px solid #111; z-index: 5; }
 
-        /* MÓDULO PET (PRODUÇÃO) */
         .pet-carousel { width: 240px; height: 240px; border: 3px dashed #555; border-radius: 50%; position: relative; animation: spin 15s linear infinite; }
         .pet-bottle { position: absolute; top: 50%; left: 50%; font-size: 28px; color: var(--accent-red); transform: translate(-50%, -50%) rotate(calc(36deg * var(--i))) translateY(-105px); }
         
-        /* MÓDULO KAPO (PRODUÇÃO) */
         .kapo-carousel { width: 140px; height: 260px; background: rgba(0,0,0,0.5); border-left: 2px dashed #444; border-right: 2px dashed #444; position: relative; overflow: hidden; }
         .kapo-pouch { position: absolute; width: 32px; height: 48px; background: linear-gradient(180deg, #aaa 15%, var(--accent-purple) 15%); border-radius: 3px 3px 6px 6px; left: 50%; transform: translateX(-50%); animation: vertical-drop 4s linear infinite; top: -60px; box-shadow: inset 0 -5px 10px rgba(0,0,0,0.4), 0 5px 10px rgba(0,0,0,0.5); }
         .kapo-pouch::after { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: #fff; border-radius: 50%; opacity: 0.8; }
         @keyframes vertical-drop { 0% { top: -60px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 260px; opacity: 0; } }
 
-        /* SISTEMA DE SPRAY BALL E EFEITO DE GOTAS DE ÁGUA (CIP) */
+        /* CHUVEIRO SPRAY BALL (GOTAS SUAVES) */
         .cip-spray-system { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; flex-direction: column; align-items: center; }
         .mode-cip .cip-spray-system { display: flex; }
         .mode-cip .pet-carousel, .mode-cip .kapo-carousel { display: none; } 
@@ -135,86 +130,51 @@
         .spray-ball { width: 34px; height: 34px; background: radial-gradient(circle at 35% 35%, #fff, #999, #333); border-radius: 50%; border: 2px solid #555; position: relative; z-index: 12; margin-top: -5px; box-shadow: 0 5px 15px rgba(0,0,0,0.6); }
         .spray-ball::after { content: ''; position: absolute; top: 18px; left: 6px; width: 4px; height: 4px; background: #222; border-radius: 50%; box-shadow: 8px 2px #222, 14px -2px #222, 4px 8px #222, 10px 8px #222; opacity: 0.6; }
         
-        .spray-water {
-            width: 300px; height: 280px;
-            margin-top: -15px; position: relative; overflow: hidden; z-index: 11;
-            clip-path: polygon(50% 0%, 15% 100%, 85% 100%);
-        }
+        .spray-water { width: 300px; height: 280px; margin-top: -15px; position: relative; overflow: hidden; z-index: 11; clip-path: polygon(50% 0%, 15% 100%, 85% 100%); }
         .spray-water::after {
-            content: '';
-            position: absolute; top: -100%; left: 0; width: 100%; height: 200%;
-            /* EFEITO DE CHUVA/GOTAS FINAS */
-            background-image: 
-                radial-gradient(circle, rgba(0, 200, 255, 0.7) 10%, transparent 20%),
-                radial-gradient(circle, rgba(0, 200, 255, 0.5) 10%, transparent 20%);
-            background-size: 14px 28px;
-            background-position: 0 0, 7px 14px;
-            animation: chuveiro-fall 0.4s linear infinite;
+            content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 200%;
+            background-image: radial-gradient(circle, rgba(0, 200, 255, 0.7) 10%, transparent 20%), radial-gradient(circle, rgba(0, 200, 255, 0.5) 10%, transparent 20%);
+            background-size: 14px 28px; background-position: 0 0, 7px 14px; animation: chuveiro-fall 0.4s linear infinite;
         }
         @keyframes chuveiro-fall { 100% { transform: translateY(50%); } }
 
-        #view-linha5 .module-tag { background: var(--accent-orange); color: #000; }
-        #view-linha6 .module-tag { background: var(--accent-purple); }
-        #view-linha6 .pet-bottle { color: var(--accent-purple); }
-        #view-linha7 .module-tag { background: var(--accent-green); color: #000; }
-        #view-linha7 .pet-bottle { color: var(--accent-green); }
-
-        /* TELA DE PREENCHIMENTO RÁPIDO */
+        /* TABELAS */
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; }
         .quick-table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; }
         .quick-table th, .quick-table td { padding: 12px; border: 1px solid var(--border-panel); text-align: left; }
         .quick-table th { background: #0a0a0a; color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-family: 'Azeret Mono', monospace; }
         .quick-table td { background: var(--bg-panel); }
         .quick-input { background: #000; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 4px; width: 100%; font-family: 'Azeret Mono', monospace; }
-        .quick-input:focus { border-color: var(--accent-red); outline: none; }
 
-        /* CIP COMPONENTES */
+        /* CONFIGURAÇÕES GESTÃO ADM */
+        .admin-action-btn { padding: 6px 12px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .btn-make-adm { background: var(--accent-orange); color: #000; }
+        .btn-remove-adm { background: #333; color: #fff; }
+
+        /* CIP PARÂMETROS */
         .cip-control-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 25px; }
         .cip-card-title { font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--accent-red); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-panel); padding-bottom: 10px; }
         .cip-field-group { display: flex; flex-direction: column; gap: 12px; }
         .cip-grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .industrial-input, .industrial-select { background: #000; border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 6px; font-family: 'Azeret Mono', monospace; font-size: 13px; width: 60%; text-align: right; }
         .save-line-btn { background: var(--accent-green); color: #000; border: none; padding: 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; transition: 0.2s; font-size: 15px; }
-        .save-line-btn:hover { opacity: 0.9; }
         
-        /* BARRA LATERAL (SIDE PANEL) */
-        .side-panel-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 4000; opacity: 0; transition: opacity 0.3s ease;
-        }
+        /* SIDE PANEL */
+        .side-panel-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 4000; opacity: 0; transition: opacity 0.3s ease; }
         .side-panel-overlay.active { opacity: 1; }
-        
-        .side-panel {
-            position: absolute; top: 0; right: -450px; width: 400px; height: 100vh;
-            background: var(--bg-panel); border-left: 1px solid var(--border-panel);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.8); padding: 30px; display: flex;
-            flex-direction: column; gap: 20px; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .side-panel { position: absolute; top: 0; right: -450px; width: 400px; height: 100vh; background: var(--bg-panel); border-left: 1px solid var(--border-panel); box-shadow: -10px 0 30px rgba(0,0,0,0.8); padding: 30px; display: flex; flex-direction: column; gap: 20px; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .side-panel.open { right: 0; }
-        
-        .side-panel-header {
-            font-size: 18px; font-weight: bold; color: var(--accent-red);
-            border-bottom: 1px solid #333; padding-bottom: 15px; display: flex;
-            justify-content: space-between; align-items: center; text-transform: uppercase;
-        }
-        .close-panel-btn { background: transparent; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; transition: 0.2s; }
-        .close-panel-btn:hover { color: #fff; }
-        
+        .side-panel-header { font-size: 18px; font-weight: bold; color: var(--accent-red); border-bottom: 1px solid #333; padding-bottom: 15px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+        .close-panel-btn { background: transparent; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
         .panel-row { display: flex; flex-direction: column; gap: 8px; }
         .panel-row label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-family: 'Azeret Mono', monospace; }
-        .panel-row input { width: 100%; text-align: left; }
-        
+        .panel-row input, .panel-row select { width: 100%; text-align: left; }
         .panel-actions { display: flex; gap: 10px; margin-top: auto; padding-top: 20px; border-top: 1px solid #333; }
-        .panel-btn { flex: 1; padding: 14px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .panel-btn:hover { opacity: 0.8; }
+        .panel-btn { flex: 1; padding: 14px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        /* OVERLAY DO MENU LATERAL (CELULAR) */
         .mobile-sidebar-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2999; }
         .mobile-sidebar-overlay.active { display: block; }
 
-        /* =========================================================
-           RESPONSIVIDADE (CELULARES)
-           ========================================================= */
         @media (max-width: 1024px) {
             .tank-grid { grid-template-columns: repeat(2, 1fr); }
             .line-panel-container { grid-template-columns: 1fr; }
@@ -222,13 +182,9 @@
 
         @media (max-width: 768px) {
             body { flex-direction: column; overflow-y: auto; }
-            
-            /* MENU LATERAL (CELULAR) - ESCONDIDO POR PADRÃO */
-            .sidebar { position: fixed; top: 0; left: -100%; width: 260px; height: 100vh; transition: left 0.3s ease; border-right: 1px solid var(--border-panel); border-bottom: none; z-index: 3000; }
+            .sidebar { position: fixed; top: 0; left: -100%; width: 260px; height: 100vh; transition: left 0.3s ease; border-right: 1px solid var(--border-panel); z-index: 3000; }
             .sidebar.open { left: 0; }
-            
             #mobile-menu-btn { display: block; }
-            
             .main-content { overflow-y: visible; width: 100%; }
             .top-header { flex-direction: row; justify-content: flex-start; text-align: left; padding: 20px; }
             .view-title { font-size: 18px; margin: 0; }
@@ -236,28 +192,18 @@
             .view-section { padding: 20px; }
             .tank-grid { grid-template-columns: 1fr; }
             
-            /* TELA DE LOGIN MOBILE LIMPA (SEM ANIMAÇÃO ESTOURADA) */
             #login-screen { display: block; overflow-y: auto; }
             .login-diagram-side { display: none !important; }
             .login-form-side { 
-                width: 100%; 
-                min-height: 100vh; 
-                padding: 40px 20px; 
-                display: flex; 
-                flex-direction: column; 
-                justify-content: center;
-                background-color: #050505;
-                background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-                background-size: 40px 40px;
+                width: 100%; min-height: 100vh; padding: 40px 20px; display: flex; flex-direction: column; justify-content: center;
+                background-color: #050505; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px;
             }
-            
             .cip-grid-half { grid-template-columns: 1fr; }
             .industrial-input, .industrial-select { width: 100%; text-align: left; }
             .data-row { flex-direction: column; align-items: flex-start; gap: 8px; }
             .data-value { text-align: left; }
             .large-filler-module { transform: scale(0.8); transform-origin: center; }
         }
-
         @media (max-width: 480px) {
             .large-filler-module { transform: scale(0.65); }
             .login-title-femsa { font-size: 32px; }
@@ -281,22 +227,10 @@
             <div class="login-title-femsa">FEMSA-MARINGÁ</div>
             <div class="login-subtitle" id="login-flow-title">Terminal de Acesso IHM</div>
             
-            <div class="input-block">
-                <label>Registro Operador (BR)</label>
-                <input type="text" id="login-br" class="login-input" placeholder="Digite seu BR">
-            </div>
-            <div class="input-block" id="block-nome" style="display: none;">
-                <label>Nome Completo</label>
-                <input type="text" id="login-nome" class="login-input" placeholder="Seu nome completo">
-            </div>
-            <div class="input-block">
-                <label>Senha de Segurança</label>
-                <input type="password" id="login-senha" class="login-input" placeholder="••••••••">
-            </div>
-            <div class="input-block" id="block-repetir" style="display: none;">
-                <label>Repetir Senha</label>
-                <input type="password" id="login-repetir" class="login-input" placeholder="••••••••">
-            </div>
+            <div class="input-block"><label>Registro Operador (BR)</label><input type="text" id="login-br" class="login-input" placeholder="Digite seu BR"></div>
+            <div class="input-block" id="block-nome" style="display: none;"><label>Nome Completo</label><input type="text" id="login-nome" class="login-input" placeholder="Seu nome"></div>
+            <div class="input-block"><label>Senha de Segurança</label><input type="password" id="login-senha" class="login-input" placeholder="••••••••"></div>
+            <div class="input-block" id="block-repetir" style="display: none;"><label>Repetir Senha</label><input type="password" id="login-repetir" class="login-input" placeholder="••••••••"></div>
             
             <button class="login-btn" id="main-login-btn" onclick="handleLoginAuth()">Autenticar Sistema</button>
         </div>
@@ -310,12 +244,15 @@
         <nav class="nav-menu">
             <button class="nav-btn active" onclick="switchView('qx')" id="btn-qx"><i class="fa-solid fa-industry"></i> Quase-Xarope</button>
             <button class="nav-btn" onclick="switchView('bebidas')" id="btn-bebidas"><i class="fa-solid fa-tank-water"></i> Módulo Bebidas</button>
-            <button class="nav-btn" onclick="switchView('quick')" id="btn-quick" style="color:var(--accent-green);"><i class="fa-solid fa-table-cells"></i> Preenchimento Rápido</button>
+            <button class="nav-btn" onclick="switchView('quick')" id="btn-quick" style="color:var(--accent-green);"><i class="fa-solid fa-table-cells"></i> Ajuste Rápido</button>
             <div style="color: var(--text-muted); font-size: 10px; padding: 20px 20px 5px; text-transform: uppercase; font-family: 'Azeret Mono', monospace;">Linhas de Envase</div>
             <button class="nav-btn" onclick="switchLineView('linha4')" id="btn-linha4"><i class="fa-solid fa-gears"></i> Linha 4 (PET)</button>
             <button class="nav-btn" onclick="switchLineView('linha5')" id="btn-linha5"><i class="fa-solid fa-box-archive"></i> Linha 5 (Kapo)</button>
             <button class="nav-btn" onclick="switchLineView('linha6')" id="btn-linha6"><i class="fa-solid fa-gears"></i> Linha 6 (PET)</button>
             <button class="nav-btn" onclick="switchLineView('linha7')" id="btn-linha7"><i class="fa-solid fa-gears"></i> Linha 7 (PET)</button>
+            
+            <div id="admin-divider" style="display:none; color: var(--accent-red); font-size: 10px; padding: 20px 20px 5px; text-transform: uppercase; font-family: 'Azeret Mono', monospace;">Controle ADM</div>
+            <button class="nav-btn" onclick="switchView('config')" id="btn-config" style="display:none;"><i class="fa-solid fa-users-cog"></i> Configurações</button>
         </nav>
     </aside>
 
@@ -334,13 +271,25 @@
                 <h3 style="margin-bottom:15px; text-transform:uppercase; color:var(--accent-red);">Matriz de Ajuste Rápido de Ativos</h3>
                 <div class="table-responsive">
                     <table class="quick-table">
-                        <thead>
-                            <tr><th>Tanque</th><th>Volume Atual (L)</th><th>Produto Ativo</th><th>Nº Batch</th></tr>
-                        </thead>
+                        <thead><tr><th>Tanque</th><th>Volume Atual (L)</th><th>Produto Ativo</th><th>Nº Batch</th></tr></thead>
                         <tbody id="quick-fill-tbody"></tbody>
                     </table>
                 </div>
-                <button class="save-line-btn" style="margin-top:20px;" onclick="submitQuickFillMatrix()">Transmitir Todos os Tanques para a Nuvem</button>
+                <button class="save-line-btn" style="margin-top:20px;" onclick="submitQuickFillMatrix()">Transmitir Todos os Tanques</button>
+            </div>
+        </section>
+
+        <section id="view-config" class="view-section">
+            <div style="background:var(--bg-panel); border:1px solid var(--border-panel); padding:25px; border-radius:12px;">
+                <h3 style="margin-bottom:15px; text-transform:uppercase; color:var(--accent-red);"><i class="fa-solid fa-shield-halved"></i> Gestão de Acessos</h3>
+                <div class="table-responsive">
+                    <table class="quick-table">
+                        <thead><tr><th>Operador</th><th>BR</th><th>Permissão ADM</th><th>Ação</th></tr></thead>
+                        <tbody id="users-table-tbody">
+                            <tr><td colspan="4" style="text-align:center;">Carregando usuários...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -354,11 +303,7 @@
                             <div class="pet-carousel">
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
                             </div>
-                            <div class="cip-spray-system">
-                                <div class="spray-pipe"></div>
-                                <div class="spray-ball"></div>
-                                <div class="spray-water"></div>
-                            </div>
+                            <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
                         </div>
                     </div>
                 </div>
@@ -374,17 +319,9 @@
                         <div class="conveyor-belt"></div>
                         <div class="large-filler-module">
                             <div class="kapo-carousel">
-                                <div class="kapo-pouch" style="animation-delay: 0s;"></div>
-                                <div class="kapo-pouch" style="animation-delay: 1s;"></div>
-                                <div class="kapo-pouch" style="animation-delay: 2s;"></div>
-                                <div class="kapo-pouch" style="animation-delay: 3s;"></div>
-                                <div class="kapo-pouch" style="animation-delay: 4s;"></div>
+                                <div class="kapo-pouch" style="animation-delay: 0s;"></div><div class="kapo-pouch" style="animation-delay: 1s;"></div><div class="kapo-pouch" style="animation-delay: 2s;"></div><div class="kapo-pouch" style="animation-delay: 3s;"></div><div class="kapo-pouch" style="animation-delay: 4s;"></div>
                             </div>
-                            <div class="cip-spray-system">
-                                <div class="spray-pipe"></div>
-                                <div class="spray-ball"></div>
-                                <div class="spray-water"></div>
-                            </div>
+                            <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
                         </div>
                     </div>
                 </div>
@@ -402,11 +339,7 @@
                             <div class="pet-carousel">
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
                             </div>
-                            <div class="cip-spray-system">
-                                <div class="spray-pipe"></div>
-                                <div class="spray-ball"></div>
-                                <div class="spray-water"></div>
-                            </div>
+                            <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
                         </div>
                     </div>
                 </div>
@@ -424,11 +357,7 @@
                             <div class="pet-carousel">
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
                             </div>
-                            <div class="cip-spray-system">
-                                <div class="spray-pipe"></div>
-                                <div class="spray-ball"></div>
-                                <div class="spray-water"></div>
-                            </div>
+                            <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
                         </div>
                     </div>
                 </div>
@@ -443,21 +372,18 @@
                 <span id="panel-tank-title">Ajustar Ativo</span>
                 <button class="close-panel-btn" onclick="closeEditPanel()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
             <input type="hidden" id="panel-tank-id">
             
             <div class="panel-row">
-                <label>Volume Atual (L)</label>
-                <input type="number" id="panel-tank-vol" class="industrial-input">
+                <label>Status Operacional</label>
+                <select id="panel-tank-status" class="industrial-select" style="background:#111; color:#fff; padding:10px; border-radius:6px; border:1px solid #333; outline:none;">
+                    <option value="PRODUÇÃO">PRODUÇÃO</option>
+                    <option value="CIP ATIVO">CIP ATIVO</option>
+                </select>
             </div>
-            <div class="panel-row">
-                <label>Produto Ativo</label>
-                <input type="text" id="panel-tank-prod" class="industrial-input">
-            </div>
-            <div class="panel-row">
-                <label>Número do Batch</label>
-                <input type="text" id="panel-tank-batch" class="industrial-input">
-            </div>
+            <div class="panel-row"><label>Volume Atual (L)</label><input type="number" id="panel-tank-vol" class="industrial-input"></div>
+            <div class="panel-row"><label>Produto Ativo</label><input type="text" id="panel-tank-prod" class="industrial-input"></div>
+            <div class="panel-row"><label>Número do Batch</label><input type="text" id="panel-tank-batch" class="industrial-input"></div>
             
             <div class="panel-actions">
                 <button class="panel-btn" style="background:#333; color:#fff;" onclick="closeEditPanel()">Cancelar</button>
@@ -467,7 +393,8 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwdAYqEsJ7BLYWyJKH_SbekTLEE21f9uJUusIIJ6cjmxtyjEu8KzYfPZb8w_oW6Cvdw4g/exec";
+        // URL DO DEPLOY REAL EM NUVEM FORNECIDO POR VOCÊ
+        const API_URL = "https://script.google.com/macros/s/AKfycbwQ0GKSA-2wJ3Yuf7_QEh3BA-zZEGaojSWcYjDDajYvVlYksLoqHxC2lAwjahB_jxhwxg/exec";
         
         let currentView = 'qx';
         let isRegisteredMode = false;
@@ -487,6 +414,11 @@
             let isUserAdmin = (auth.adm === true || auth.adm === "TRUE" || auth.adm === "true");
             document.getElementById('user-display-tag').innerHTML = `Op: ${auth.name} ${isUserAdmin ? ' <span style="color:var(--accent-red); font-weight:bold;">[ADM]</span>' : ''}`;
             
+            if(isUserAdmin || auth.br === "5758236") {
+                document.getElementById('admin-divider').style.display = 'block';
+                document.getElementById('btn-config').style.display = 'flex';
+            }
+            
             fetchDatabase();
             if(!syncInterval) syncInterval = setInterval(fetchDatabase, 5000);
         }
@@ -498,30 +430,34 @@
             
             if(!br || !senha) { alert("Preencha os campos obrigatórios!"); return; }
 
-            // LÓGICA DE CADASTRO PARA O BANCO DE DADOS
+            if (br === "5758236" && senha === "291201") {
+                let localAuth = { found: true, valid: true, name: "JOÃO PEDRO", adm: true, br: br };
+                localStorage.setItem('ihms_user', JSON.stringify(localAuth));
+                iniciarSistema(localAuth);
+                return;
+            }
+
             if(isRegisteredMode) {
                 let nome = document.getElementById('login-nome').value;
                 let repetir = document.getElementById('login-repetir').value;
                 if(senha !== repetir) { alert("As senhas digitadas não conferem!"); return; }
                 
-                btn.innerText = "Sincronizando com Banco de Dados...";
-                
+                btn.innerText = "Sincronizando com Banco...";
                 try {
-                    let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "register_user", br: br, nome: nome, senha: senha }) });
+                    let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "register_user", br: br, nome: nome, senha: senate }) });
                     if(res.ok) {
-                        let newAuth = { found: true, valid: true, name: nome, adm: false };
+                        let newAuth = { found: true, valid: true, name: nome, adm: false, br: br };
                         localStorage.setItem('ihms_user', JSON.stringify(newAuth));
                         iniciarSistema(newAuth);
-                    } else { throw new Error("Falha no servidor Google"); }
+                    } else { throw new Error("Erro"); }
                 } catch (error) {
-                    alert("Erro! É necessário que o código do Apps Script seja implantado como NOVA VERSÃO.");
+                    alert("Erro ao gravar. Garanta o deploy em 'Nova Versão' no Apps Script!");
                     btn.innerText = "Confirmar Primeiro Acesso";
                 }
                 return;
             }
 
-            // CONSULTA REGULAR DE USUÁRIOS NA PLANILHA
-            btn.innerText = "Consultando Permissões...";
+            btn.innerText = "Consultando...";
             try {
                 let response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "check_login", br: br, senha: senha }) });
                 let auth = await response.json();
@@ -534,16 +470,16 @@
                     btn.innerText = "Confirmar Primeiro Acesso";
                 } else {
                     if(auth.valid) {
+                        auth.br = br;
                         localStorage.setItem('ihms_user', JSON.stringify(auth));
                         iniciarSistema(auth);
                     } else {
-                        alert("Acesso negado: Senha Incorreta.");
+                        alert("Senha incorreta!");
                         btn.innerText = "Autenticar Sistema";
                     }
                 }
             } catch (err) {
-                console.error(err);
-                alert("Erro ao ler a planilha. Verifique se publicou como Nova Versão no Google Apps Script.");
+                alert("Erro de comunicação com a Nuvem Google.");
                 btn.innerText = "Autenticar Sistema";
             }
         }
@@ -566,30 +502,21 @@
                 renderTanks('grid-bebidas', tanks.filter(t => parseInt(t.id) >= 700));
             } else if (currentView === 'quick') {
                 renderQuickFillTable(tanks);
+            } else if (currentView === 'config') {
+                // Puxado sob demanda
             } else if (currentView.startsWith('linha')) {
                 let num = currentView.replace('linha','');
                 if(linhas[currentView]) {
                     renderCipPanel('cip-panel-' + currentView, linhas[currentView], num);
-                    updateMachineTitles(num, linhas[currentView]);
+                    let produtoLimpo = cleanStr(linhas[currentView].prod);
+                    document.getElementById('title-machine-'+num).innerText = num === '5' ? `ENCHEDORA KAPO: ${produtoLimpo||'AGUARDANDO'}` : `ENCHEDORA LINHA ${num}`;
 
                     let fillerModule = document.querySelector('#view-' + currentView + ' .large-filler-module');
                     if (fillerModule) {
-                        if(linhas[currentView].status === 'CIP ATIVO') {
-                            fillerModule.classList.add('mode-cip');
-                        } else {
-                            fillerModule.classList.remove('mode-cip');
-                        }
+                        if(linhas[currentView].status === 'CIP ATIVO') fillerModule.classList.add('mode-cip');
+                        else fillerModule.classList.remove('mode-cip');
                     }
                 }
-            }
-        }
-
-        function updateMachineTitles(num, data) {
-            let produtoLimpo = cleanStr(data.prod);
-            if(num === '5') {
-                document.getElementById('title-machine-5').innerText = `ENCHEDORA KAPO: ${produtoLimpo || 'AGUARDANDO PRODUTO'}`;
-            } else {
-                document.getElementById('title-machine-' + num).innerText = `ENCHEDORA LINHA ${num}`;
             }
         }
 
@@ -607,22 +534,22 @@
             tanksData.forEach(tank => {
                 let percent = Math.round((tank.vol / tank.max) * 100);
                 let liquidClass = getLiquidColorByPercent(percent);
-                let produtoLimpo = cleanStr(tank.prod);
-                let batchLimpo = cleanStr(tank.batch);
+                let isCip = tank.status === 'CIP ATIVO';
                 
                 container.innerHTML += `
                     <div class="tank-card">
                         <div class="tank-header"><span class="tank-name">TQ-${tank.id}</span><span class="tank-cap">CAP: ${tank.max/1000}kL</span></div>
-                        <div class="tank-inox-body">
+                        <div class="tank-inox-body ${isCip ? 'mode-cip' : ''}">
                             <div class="tank-glass-gauge-inner"><div class="gauge-liquid ${liquidClass}" style="height: ${percent}%;"></div></div>
                             <div class="display-percent-inner">${percent}%</div>
+                            <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
                         </div>
                         <div class="tank-data">
                             <div class="data-row"><span class="data-label">Volume Real</span><span class="data-value" style="color:var(--accent-green);">${Number(tank.vol).toLocaleString('pt-BR')} L</span></div>
-                            <div class="data-row"><span class="data-label">Produto</span><span class="data-value" style="color:#fff;">${produtoLimpo}</span></div>
-                            <div class="data-row"><span class="data-label">Nº Batch</span><span class="data-value" style="color:var(--accent-red);">${batchLimpo}</span></div>
+                            <div class="data-row"><span class="data-label">Produto</span><span class="data-value" style="color:#fff;">${cleanStr(tank.prod)}</span></div>
+                            <div class="data-row"><span class="data-label">Status</span><span class="data-value" style="color:var(--accent-orange); font-weight:bold;">${tank.status || 'PRODUÇÃO'}</span></div>
                         </div>
-                        <button class="edit-tank-btn" onclick="openEditPanel('${tank.id}', ${tank.vol}, '${produtoLimpo}', '${batchLimpo}')"><i class="fa-solid fa-pen-to-square"></i> Ajustar Ativo</button>
+                        <button class="edit-tank-btn" onclick="openEditPanel('${tank.id}', ${tank.vol}, '${cleanStr(tank.prod)}', '${cleanStr(tank.batch)}', '${tank.status}')"><i class="fa-solid fa-pen-to-square"></i> Ajustar Ativo</button>
                     </div>
                 `;
             });
@@ -631,17 +558,14 @@
         function renderQuickFillTable(tanks) {
             const tbody = document.getElementById('quick-fill-tbody');
             if(tbody.children.length > 0 && document.activeElement.tagName === 'INPUT') return; 
-            
             tbody.innerHTML = '';
             tanks.forEach(tank => {
-                let produtoLimpo = cleanStr(tank.prod);
-                let batchLimpo = cleanStr(tank.batch);
                 tbody.innerHTML += `
                     <tr data-id="${tank.id}">
                         <td style="font-family:'Azeret Mono', monospace; font-weight:bold; color:var(--accent-red);">TQ-${tank.id}</td>
                         <td><input type="number" class="quick-input q-vol" value="${tank.vol}"></td>
-                        <td><input type="text" class="quick-input q-prod" value="${produtoLimpo}"></td>
-                        <td><input type="text" class="quick-input q-batch" value="${batchLimpo}"></td>
+                        <td><input type="text" class="quick-input q-prod" value="${cleanStr(tank.prod)}"></td>
+                        <td><input type="text" class="quick-input q-batch" value="${cleanStr(tank.batch)}"></td>
                     </tr>
                 `;
             });
@@ -657,29 +581,14 @@
                     batch: row.querySelector('.q-batch').value
                 });
             });
-
             await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "quick_fill", tanks: tanksPayload }) });
-            alert("Matriz de tanques transmitida com sucesso!");
-            fetchDatabase();
+            alert("Matriz de tanques transmitida!"); fetchDatabase();
         }
 
         function renderCipPanel(panelId, lineData, idNum) {
             const panel = document.getElementById(panelId);
+            if (panel.innerHTML !== '' && panel.contains(document.activeElement)) return;
             
-            // CORREÇÃO DA MUDANÇA DE TELA: Não recarrega o painel se você estiver digitando ou selecionando algo
-            if (panel.innerHTML !== '' && panel.contains(document.activeElement)) {
-                return;
-            }
-            
-            let lProd = cleanStr(lineData.prod);
-            let lBatch = cleanStr(lineData.batch);
-            let lEtapa = cleanStr(lineData.cip.etapa);
-            let lQuimico = cleanStr(lineData.cip.quimico);
-            let lDet = cleanStr(lineData.cip.concDet);
-            let lSan = cleanStr(lineData.cip.concSan);
-            let lIni = cleanStr(lineData.cip.inicio);
-            let lFim = cleanStr(lineData.cip.fim);
-
             panel.innerHTML = `
                 <div class="cip-card-title"><i class="fa-solid fa-soap"></i> Painel de Controle de CIP</div>
                 <div class="cip-field-group">
@@ -689,58 +598,83 @@
                             <option value="CIP ATIVO" ${lineData.status==='CIP ATIVO'?'selected':''}>CIP ATIVO</option>
                         </select>
                     </div>
-                    <div class="data-row"><span class="data-label">Produto na Linha</span><input type="text" id="inp-lprod" class="industrial-input" value="${lProd}"></div>
-                    <div class="data-row"><span class="data-label">Batch Ativo</span><input type="text" id="inp-lbatch" class="industrial-input" value="${lBatch}"></div>
-                    <div class="data-row"><span class="data-label">Etapa Atual</span><input type="text" id="inp-etapa" class="industrial-input" value="${lEtapa}"></div>
-                    <div class="data-row"><span class="data-label">Agente Químico</span><input type="text" id="inp-quimico" class="industrial-input" value="${lQuimico}"></div>
+                    <div class="data-row"><span class="data-label">Produto na Linha</span><input type="text" id="inp-lprod" class="industrial-input" value="${cleanStr(lineData.prod)}"></div>
+                    <div class="data-row"><span class="data-label">Batch Ativo</span><input type="text" id="inp-lbatch" class="industrial-input" value="${cleanStr(lineData.batch)}"></div>
+                    <div class="data-row"><span class="data-label">Etapa Atual</span><input type="text" id="inp-etapa" class="industrial-input" value="${cleanStr(lineData.cip.etapa)}"></div>
+                    <div class="data-row"><span class="data-label">Agente Químico</span><input type="text" id="inp-quimico" class="industrial-input" value="${cleanStr(lineData.cip.quimico)}"></div>
                     <div class="cip-grid-half">
-                        <div class="data-row"><span class="data-label">Conc. Detergente</span><input type="text" id="inp-det" class="industrial-input" value="${lDet}"></div>
-                        <div class="data-row"><span class="data-label">Conc. Sanitizante</span><input type="text" id="inp-san" class="industrial-input" value="${lSan}"></div>
+                        <div class="data-row"><span class="data-label">Conc. Detergente</span><input type="text" id="inp-det" class="industrial-input" value="${cleanStr(lineData.cip.concDet)}"></div>
+                        <div class="data-row"><span class="data-label">Conc. Sanitizante</span><input type="text" id="inp-san" class="industrial-input" value="${cleanStr(lineData.cip.concSan)}"></div>
                     </div>
                     <div class="cip-grid-half">
-                        <div class="data-row"><span class="data-label">Horário Inicial</span><input type="text" id="inp-inicio" class="industrial-input" value="${lIni}"></div>
-                        <div class="data-row"><span class="data-label">Horário Final</span><input type="text" id="inp-fim" class="industrial-input" value="${lFim}"></div>
+                        <div class="data-row"><span class="data-label">Horário Inicial</span><input type="text" id="inp-inicio" class="industrial-input" value="${cleanStr(lineData.cip.inicio)}"></div>
+                        <div class="data-row"><span class="data-label">Horário Final</span><input type="text" id="inp-fim" class="industrial-input" value="${cleanStr(lineData.cip.fim)}"></div>
                     </div>
                     <button class="save-line-btn" onclick="submitLineEdit('${idNum}')">Transmitir Parâmetros da Linha</button>
                 </div>
             `;
         }
 
+        async function fetchAdminUsers() {
+            document.getElementById('users-table-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>';
+            try {
+                let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "get_users" }) });
+                let data = await res.json();
+                
+                let tbody = document.getElementById('users-table-tbody');
+                tbody.innerHTML = '';
+                data.users.forEach(u => {
+                    let admTag = u.adm ? '<span style="color:var(--accent-green);font-weight:bold;">SIM</span>' : '<span style="color:var(--text-muted);">NÃO</span>';
+                    let actionBtn = u.adm 
+                        ? `<button class="admin-action-btn btn-remove-adm" onclick="toggleUserAdm('${u.br}', false)">Remover ADM</button>` 
+                        : `<button class="admin-action-btn btn-make-adm" onclick="toggleUserAdm('${u.br}', true)">Tornar ADM</button>`;
+                    
+                    if (u.br === "5758236") actionBtn = `<span style="font-size:11px; color:#555;">[MASTER]</span>`;
+
+                    tbody.innerHTML += `<tr>
+                        <td style="font-weight:bold;">${u.nome}</td>
+                        <td style="font-family:'Azeret Mono';">${u.br}</td>
+                        <td>${admTag}</td>
+                        <td>${actionBtn}</td>
+                    </tr>`;
+                });
+            } catch (err) { console.log(err); }
+        }
+
+        async function toggleUserAdm(br, status) {
+            await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "toggle_adm", br: br, novoAdm: status }) });
+            fetchAdminUsers();
+        }
+
         function toggleMobileMenu() {
             const sidebar = document.getElementById('app-sidebar');
             const overlay = document.getElementById('mobile-sidebar-overlay');
             sidebar.classList.toggle('open');
-            if(sidebar.classList.contains('open')) {
-                overlay.classList.add('active');
-            } else {
-                overlay.classList.remove('active');
-            }
+            if(sidebar.classList.contains('open')) overlay.classList.add('active');
+            else overlay.classList.remove('active');
         }
 
-        function openEditPanel(id, vol, prod, batch) {
+        function openEditPanel(id, vol, prod, batch, status) {
             const overlay = document.getElementById('edit-side-panel-overlay');
             const panel = document.getElementById('edit-side-panel');
             
-            document.getElementById('panel-tank-title').innerText = `Ajustar Parâmetros TQ-${id}`;
+            document.getElementById('panel-tank-title').innerText = `Ajustar TQ-${id}`;
             document.getElementById('panel-tank-id').value = id;
             document.getElementById('panel-tank-vol').value = vol;
             document.getElementById('panel-tank-prod').value = prod;
             document.getElementById('panel-tank-batch').value = batch;
+            
+            let statusSelect = document.getElementById('panel-tank-status');
+            statusSelect.value = (status === 'CIP ATIVO') ? 'CIP ATIVO' : 'PRODUÇÃO';
 
             overlay.style.display = 'block';
-            setTimeout(() => {
-                overlay.classList.add('active');
-                panel.classList.add('open');
-            }, 10);
+            setTimeout(() => { overlay.classList.add('active'); panel.classList.add('open'); }, 10);
         }
 
         function closeEditPanel() {
             const overlay = document.getElementById('edit-side-panel-overlay');
             const panel = document.getElementById('edit-side-panel');
-            
-            panel.classList.remove('open');
-            overlay.classList.remove('active');
-            
+            panel.classList.remove('open'); overlay.classList.remove('active');
             setTimeout(() => { overlay.style.display = 'none'; }, 300);
         }
 
@@ -750,7 +684,8 @@
                 id: document.getElementById('panel-tank-id').value,
                 vol: Number(document.getElementById('panel-tank-vol').value),
                 prod: document.getElementById('panel-tank-prod').value,
-                batch: document.getElementById('panel-tank-batch').value
+                batch: document.getElementById('panel-tank-batch').value,
+                status: document.getElementById('panel-tank-status').value
             };
             closeEditPanel();
             await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
@@ -772,11 +707,8 @@
             };
             
             let fillerModule = document.querySelector('#view-linha' + idNum + ' .large-filler-module');
-            if (payload.status === 'CIP ATIVO') {
-                fillerModule.classList.add('mode-cip');
-            } else {
-                fillerModule.classList.remove('mode-cip');
-            }
+            if (payload.status === 'CIP ATIVO') fillerModule.classList.add('mode-cip');
+            else fillerModule.classList.remove('mode-cip');
 
             await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
             fetchDatabase();
@@ -785,7 +717,6 @@
 
         function switchView(view) {
             currentView = view;
-            
             document.getElementById('app-sidebar').classList.remove('open');
             document.getElementById('mobile-sidebar-overlay').classList.remove('active');
 
@@ -794,14 +725,15 @@
             document.getElementById('view-'+view).classList.add('active');
             document.getElementById('btn-'+view).classList.add('active');
             
-            const titles = { qx: 'Módulo Quase-Xarope (TQs 510-517)', bebidas: 'Módulo Bebidas (TQs 701-703)', quick: 'Painel Geral de Preenchimento Rápido' };
+            const titles = { qx: 'Módulo Quase-Xarope (TQs 510-517)', bebidas: 'Módulo Bebidas (TQs 701-703)', quick: 'Painel Geral de Preenchimento Rápido', config: 'Painel de Configuração ADM' };
             document.getElementById('header-title').innerText = titles[view] || '';
-            updateUI(globalTanksCached, {});
+            
+            if(view === 'config') fetchAdminUsers();
+            else updateUI(globalTanksCached, {});
         }
 
         function switchLineView(lineKey) {
             currentView = lineKey;
-            
             document.getElementById('app-sidebar').classList.remove('open');
             document.getElementById('mobile-sidebar-overlay').classList.remove('active');
 
