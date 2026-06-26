@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IHMS - Controle Industrial</title>
-    <!-- Fontes do Google -->
+    <title>IHMS - Controle Industrial COCA-COLA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Ícones FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        /* VARIÁVEIS DE COR (TEMA INDUSTRIAL) */
+        /* VARIÁVEIS DE COR (TEMA INDUSTRIAL COCA-COLA) */
         :root {
-            --bg-base: #020617;      /* Fundo escuro principal */
-            --bg-panel: #0f172a;     /* Fundo dos painéis/cards */
-            --bg-sidebar: #0b1120;   /* Fundo do menu lateral */
-            --border-color: #1e293b; /* Cor das bordas */
-            --text-main: #f8fafc;    /* Texto principal (claro) */
-            --text-muted: #94a3b8;   /* Texto secundário (cinza) */
-            --accent-green: #00ff88; /* Verde Neon para volumes e status */
-            --accent-blue: #00d4ff;  /* Azul para destaques */
-            --danger-red: #ff3366;   /* Vermelho para tanques vazios/alerta */
+            --bg-base: #000000;       /* Fundo preto puro */
+            --bg-panel: #1a1a1a;      /* Fundo dos painéis (cinza muito escuro) */
+            --bg-sidebar: #0f0f0f;    /* Fundo do menu lateral */
+            --border-color: #333333;  /* Cor das bordas (cinza escuro) */
+            --text-main: #ffffff;     /* Texto principal (branco) */
+            --text-muted: #888888;    /* Texto secundário (cinza) */
+            --accent-red: #e50914;    /* Vermelho Coca-Cola (cor primária) */
+            --accent-green: #00cc66;  /* Verde (status e volumes categoria A) */
+            --accent-purple: #8a2be2; /* Roxo (categoria) */
+            --accent-orange: #ff8c00; /* Laranja (categoria) */
+            /* ZERO AZUL */
         }
 
         * {
@@ -59,7 +59,7 @@
 
         .logo-area h1 {
             font-size: 32px;
-            color: var(--accent-blue);
+            color: var(--accent-red); /* Vermelho Coca-Cola */
             letter-spacing: 2px;
         }
 
@@ -108,8 +108,8 @@
 
         .nav-btn.active {
             background-color: var(--border-color);
-            color: var(--accent-green);
-            border-left: 4px solid var(--accent-green);
+            color: var(--accent-red);
+            border-left: 4px solid var(--accent-red);
         }
 
         /* 2. ÁREA PRINCIPAL */
@@ -117,8 +117,8 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            background: radial-gradient(circle at 100% 0%, rgba(0, 212, 255, 0.03) 0%, transparent 40%),
-                        radial-gradient(circle at 0% 100%, rgba(0, 255, 136, 0.03) 0%, transparent 40%);
+            background: radial-gradient(circle at 100% 0%, rgba(229, 9, 20, 0.03) 0%, transparent 40%),
+                        radial-gradient(circle at 0% 100%, rgba(0, 204, 102, 0.03) 0%, transparent 40%);
             overflow-y: auto;
         }
 
@@ -128,7 +128,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(2, 6, 23, 0.8);
+            background-color: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
@@ -143,7 +143,7 @@
         .status-system {
             font-family: 'Azeret Mono', monospace;
             font-size: 12px;
-            color: var(--accent-green);
+            color: var(--accent-red);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -152,9 +152,9 @@
         .status-dot {
             width: 8px;
             height: 8px;
-            background-color: var(--accent-green);
+            background-color: var(--accent-red);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-red);
             animation: pulse 2s infinite;
         }
 
@@ -185,11 +185,6 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr); /* 4 colunas */
             gap: 25px;
-        }
-
-        /* Bebidas tem 2 tanques, centralizamos usando um grid menor */
-        #view-bebidas .tank-grid {
-            grid-template-columns: repeat(4, 1fr);
         }
 
         /* 5. DESIGN DO TANQUE (CARD) */
@@ -239,28 +234,30 @@
         .tank-graphic {
             width: 100px;
             height: 220px;
-            background-color: #020617;
+            background-color: #000000;
             border: 3px solid var(--border-color);
-            border-radius: 8px; /* Cantos arredondados */
+            border-radius: 15px; /* Cantos arredondados industrial */
             position: relative;
             overflow: hidden;
             margin-bottom: 25px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
+        /* Preenchimento de Volume Categoria A (Verde) */
         .tank-fill {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(0deg, #00b09b, #96c93d); /* Gradiente Verde Padrão */
+            background: linear-gradient(0deg, #00994d, #00cc66); /* Gradiente Verde Industrial */
             transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
         }
 
-        /* Cores dinâmicas para o preenchimento */
-        .fill-blue { background: linear-gradient(0deg, #005c97, #363795); }
-        .fill-orange { background: linear-gradient(0deg, #f12711, #f5af19); }
+        /* Cores categoria baseada no produto */
+        .fill-red { background: linear-gradient(0deg, #a70000, #e50914); } /* Vermelho Coca-Cola */
+        .fill-purple { background: linear-gradient(0deg, #5c2c90, #8a2be2); } /* Roxo Industrial */
+        .fill-orange { background: linear-gradient(0deg, #d36e00, #ff8c00); } /* Laranja Categoria B */
         .fill-empty { background: transparent; }
 
         .tank-percent {
@@ -306,43 +303,146 @@
         .data-value {
             font-family: 'Azeret Mono', monospace;
             font-size: 14px;
-            color: var(--accent-blue);
+            color: var(--text-main);
             font-weight: 700;
             text-align: right;
         }
         
-        .data-value.vol-value {
-            color: var(--accent-green);
+        /* Volume e Batch em Vermelho Coca-Cola */
+        .data-value.vol-value, .data-value.batch-value {
+            color: var(--accent-red);
             font-size: 16px;
+        }
+
+        /* 6. LAYOUT DAS ENCHEDORAS (LINHAS DE ENVASE) */
+        .filler-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .filler-machine-graphic {
+            width: 100%;
+            max-width: 900px;
+            height: 450px;
+            background-color: var(--bg-panel);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .filler-title {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Azeret Mono', monospace;
+            font-size: 14px;
+        }
+
+        .filler-icon-large {
+            font-size: 200px;
+            color: #222222;
+        }
+
+        /* Informações da Linha */
+        .line-status-panel {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .line-data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .line-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .line-value {
+            font-family: 'Azeret Mono', monospace;
+            font-size: 18px;
+            color: var(--accent-red);
+            font-weight: 700;
+        }
+
+        /* Estilos específicos para a Enchedora de PET e Kapo */
+        .pet-icon {
+            font-size: 100px;
+            color: var(--accent-red);
+            margin: 0 20px;
+        }
+
+        .filler-visual-part {
+            display: flex;
+            align-items: center;
         }
 
     </style>
 </head>
 <body>
 
-    <!-- 1. MENU LATERAL -->
     <aside class="sidebar">
         <div class="logo-area">
             <h1>IHMS</h1>
-            <p>Controle Industrial</p>
+            <p>Controle Industrial COCA-COLA</p>
         </div>
         <nav class="nav-menu">
-            <!-- Botão Quase-Xarope -->
             <button class="nav-btn active" onclick="switchView('qx')" id="btn-qx">
                 <i class="fa-solid fa-industry"></i>
                 Quase-Xarope
             </button>
-            <!-- Botão Bebidas -->
             <button class="nav-btn" onclick="switchView('bebidas')" id="btn-bebidas">
                 <i class="fa-solid fa-wine-glass-empty"></i>
                 Bebidas
             </button>
+            <div style="color: var(--text-muted); font-size: 11px; padding: 15px 20px 5px; text-transform: uppercase; letter-spacing: 1px; font-family: 'Azeret Mono', monospace;">Linhas de Envase</div>
+            <button class="nav-btn" onclick="switchFillerView('linha4')" id="btn-linha4">
+                <i class="fa-solid fa-bottle-droplet"></i>
+                Linha 4 (PET)
+            </button>
+            <button class="nav-btn" onclick="switchFillerView('linha5')" id="btn-linha5">
+                <i class="fa-solid fa-wine-glass"></i>
+                Linha 5 (Kapo)
+            </button>
+            <button class="nav-btn" onclick="switchFillerView('linha6')" id="btn-linha6">
+                <i class="fa-solid fa-bottle-droplet"></i>
+                Linha 6 (PET)
+            </button>
+            <button class="nav-btn" onclick="switchFillerView('linha7')" id="btn-linha7">
+                <i class="fa-solid fa-bottle-droplet"></i>
+                Linha 7 (PET)
+            </button>
         </nav>
     </aside>
 
-    <!-- 2. ÁREA PRINCIPAL -->
     <main class="main-content">
-        <!-- Topo -->
         <header class="top-header">
             <h2 class="view-title" id="header-title">Módulo Quase-Xarope (TQs 510-517)</h2>
             <div class="status-system">
@@ -351,42 +451,145 @@
             </div>
         </header>
 
-        <!-- VIEW: QUASE-XAROPE (8 Tanques) -->
         <section id="view-qx" class="view-section active">
             <div class="tank-grid" id="grid-qx">
-                <!-- Os tanques serão injetados aqui pelo JavaScript -->
+                </div>
+        </section>
+
+        <section id="view-bebidas" class="view-section">
+            <div class="tank-grid" id="grid-bebidas">
+                </div>
+        </section>
+
+        <section id="view-linha4" class="view-section">
+            <div class="filler-view">
+                <div class="filler-machine-graphic">
+                    <span class="filler-title">Enchedora Linha 4 (PET)</span>
+                    <div class="filler-visual-part">
+                        <i class="fa-solid fa-bottle-water pet-icon" style="opacity: 0.5;"></i>
+                        <i class="fa-solid fa-bottle-water pet-icon" style="opacity: 0.8;"></i>
+                        <i class="fa-solid fa-bottle-water pet-icon"></i>
+                        <i class="fa-solid fa-bottle-water pet-icon" style="opacity: 0.8;"></i>
+                        <i class="fa-solid fa-bottle-water pet-icon" style="opacity: 0.5;"></i>
+                    </div>
+                </div>
+                <div class="line-status-panel">
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-barcode"></i> Batch em Processo</span>
+                        <span class="line-value">P-8041</span>
+                    </div>
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-flask"></i> Produto Atual</span>
+                        <span class="line-value" style="color: white;">Coca-Cola PET 2L</span>
+                    </div>
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-gauge"></i> Capacidade da Linha</span>
+                        <span class="line-value" style="color: var(--accent-green);">18.000 G/H</span>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- VIEW: BEBIDAS (2 Tanques) -->
-        <section id="view-bebidas" class="view-section">
-            <div class="tank-grid" id="grid-bebidas">
-                <!-- Os tanques serão injetados aqui pelo JavaScript -->
+        <section id="view-linha5" class="view-section">
+            <div class="filler-view">
+                <div class="filler-machine-graphic">
+                    <span class="filler-title">Enchedora Linha 5 (Bebida Kapo)</span>
+                    <div class="filler-visual-part">
+                        <i class="fa-solid fa-flask pet-icon" style="opacity: 0.5;"></i>
+                        <i class="fa-solid fa-flask pet-icon" style="opacity: 0.8;"></i>
+                        <i class="fa-solid fa-flask pet-icon"></i>
+                        <i class="fa-solid fa-flask pet-icon" style="opacity: 0.8;"></i>
+                        <i class="fa-solid fa-flask pet-icon" style="opacity: 0.5;"></i>
+                    </div>
+                </div>
+                <div class="line-status-panel">
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-barcode"></i> Batch Kapo</span>
+                        <span class="line-value">K-7051</span>
+                    </div>
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-flask"></i> Sabor do Dia</span>
+                        <span class="line-value" style="color: white;">Kapo Uva</span>
+                    </div>
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-gauge"></i> Capacidade Kapo</span>
+                        <span class="line-value" style="color: var(--accent-green);">24.000 P/H</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-linha6" class="view-section">
+            <div class="filler-view">
+                <div class="filler-machine-graphic">
+                    <span class="filler-title">Enchedora Linha 6 (PET)</span>
+                    <div class="filler-visual-part">
+                        <i class="fa-solid fa-bottle-droplet filler-icon-large"></i>
+                    </div>
+                </div>
+                <div class="line-status-panel">
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-barcode"></i> Batch PET</span>
+                        <span class="line-value">P-8061</span>
+                    </div>
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-flask"></i> Produto</span>
+                        <span class="line-value" style="color: white;">Fanta Laranja 1.5L</span>
+                    </div>
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-gauge"></i> Capacidade</span>
+                        <span class="line-value" style="color: var(--accent-green);">16.000 G/H</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-linha7" class="view-section">
+            <div class="filler-view">
+                <div class="filler-machine-graphic">
+                    <span class="filler-title">Enchedora Linha 7 (PET)</span>
+                    <div class="filler-visual-part">
+                        <i class="fa-solid fa-bottle-droplet filler-icon-large"></i>
+                    </div>
+                </div>
+                <div class="line-status-panel">
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-barcode"></i> Batch</span>
+                        <span class="line-value">P-8071</span>
+                    </div>
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-flask"></i> Produto</span>
+                        <span class="line-value" style="color: white;">Sprite PET 2.25L</span>
+                    </div>
+                    <div class="line-data-row">
+                        <span class="line-label"><i class="fa-solid fa-gauge"></i> Capacidade</span>
+                        <span class="line-value" style="color: var(--accent-green);">17.500 G/H</span>
+                    </div>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- 3. LÓGICA DO APLICATIVO (JAVASCRIPT) -->
     <script>
         // --- BASE DE DADOS SIMULADA (Até conectarmos no Google Sheets) ---
 
-        // Array dos 8 tanques de Quase-Xarope (Capacidade: 32.000 L)
+        // Array dos 8 tanques de Quase-Xarope (Capacidade: 32.000 L, Categorias A/B/X)
         const dataQX = [
-            { id: '510', max: 32000, vol: 24500, prod: 'Xarope Cola', batch: 'B-8801' },
-            { id: '511', max: 32000, vol: 16000, prod: 'Xarope Laranja', batch: 'B-8802' },
-            { id: '512', max: 32000, vol: 0,     prod: 'Vazio / CIP', batch: '-' },
-            { id: '513', max: 32000, vol: 31000, prod: 'Xarope Limão', batch: 'B-8804' },
-            { id: '514', max: 32000, vol: 8000,  prod: 'Xarope Uva', batch: 'B-8805' },
-            { id: '515', max: 32000, vol: 0,     prod: 'Vazio / CIP', batch: '-' },
-            { id: '516', max: 32000, vol: 28000, prod: 'Xarope Guaraná', batch: 'B-8807' },
-            { id: '517', max: 32000, vol: 15500, prod: 'Xarope Tônica', batch: 'B-8808' }
+            { id: '510', max: 32000, vol: 24500, prod: 'Coca-Cola Xarope', batch: 'B-8801', cat: 'X' },
+            { id: '511', max: 32000, vol: 16000, prod: 'Fanta Xarope',    batch: 'B-8802', cat: 'B' },
+            { id: '512', max: 32000, vol: 0,     prod: 'Vazio / CIP',     batch: '-',      cat: 'CIP' },
+            { id: '513', max: 32000, vol: 31000, prod: 'Sprite Xarope',   batch: 'B-8804', cat: 'B' },
+            { id: '514', max: 32000, vol: 8000,  prod: 'Schwerpes Tonica', batch: 'B-8805', cat: 'A' },
+            { id: '515', max: 32000, vol: 0,     prod: 'Vazio / CIP',     batch: '-',      cat: 'CIP' },
+            { id: '516', max: 32000, vol: 28000, prod: 'Kapo Uva Xarope', batch: 'B-8807', cat: 'A' },
+            { id: '517', max: 32000, vol: 15500, prod: 'Ciel Xarope',     batch: 'B-8808', cat: 'A' }
         ];
 
         // Array dos 2 tanques de Bebidas (Capacidade: 20.000 L)
         const dataBebidas = [
-            { id: '701', max: 20000, vol: 18500, prod: 'Bebida Pronta Cola', batch: 'P-9011' },
-            { id: '702', max: 20000, vol: 4200,  prod: 'Bebida Pronta Uva', batch: 'P-9012' }
+            { id: '701', max: 20000, vol: 18500, prod: 'Bebida Pronta Cola', batch: 'P-9011', cat: 'X' },
+            { id: '702', max: 20000, vol: 4200,  prod: 'Bebida Uva Kapo',  batch: 'P-9012', cat: 'A' }
         ];
 
         // --- FUNÇÃO PARA CRIAR OS CARDS DOS TANQUES NA TELA ---
@@ -399,17 +602,18 @@
                 let percent = (tank.vol / tank.max) * 100;
                 percent = Math.round(percent);
 
-                // Lógica de cores do tanque baseada no produto ou status
+                // Lógica de cores do tanque baseada na categoria do produto
                 let fillClass = '';
-                if (tank.vol === 0) fillClass = 'fill-empty';
-                else if (percent > 80) fillClass = 'fill-blue';
-                else fillClass = ''; // Usa o verde padrão
+                if (tank.cat === 'X') fillClass = 'fill-red'; // Vermelho Coca-Cola
+                else if (tank.cat === 'B') fillClass = 'fill-orange'; // Laranja Categoria B
+                else if (tank.cat === 'A') fillClass = 'fill-purple'; // Roxo Categoria A
+                else fillClass = 'fill-empty'; // Vazio / CIP
 
                 // Formatação do volume com ponto milhar (ex: 32.000)
                 let volFormatted = tank.vol.toLocaleString('pt-BR');
                 let maxFormatted = (tank.max / 1000) + 'k'; // Transforma 32000 em 32k
 
-                // Montagem do HTML de cada tanque
+                // Montagem do HTML de cada tanque (Design mais "industrial" e arredondado)
                 const tankHTML = `
                     <div class="tank-card">
                         <div class="tank-header">
@@ -429,11 +633,11 @@
                             </div>
                             <div class="data-row">
                                 <span class="data-label"><i class="fa-solid fa-flask"></i> Produto</span>
-                                <span class="data-value" style="color: #f8fafc;">${tank.prod}</span>
+                                <span class="data-value" style="color: #ffffff;">${tank.prod}</span>
                             </div>
                             <div class="data-row">
                                 <span class="data-label"><i class="fa-solid fa-barcode"></i> Batch</span>
-                                <span class="data-value">${tank.batch}</span>
+                                <span class="data-value batch-value">${tank.batch}</span>
                             </div>
                         </div>
                     </div>
@@ -467,6 +671,24 @@
             }
         }
 
+        // --- FUNÇÃO PARA NAVEGAR PARA AS ENCHEDORAS ---
+        function switchFillerView(viewName) {
+            // 1. Esconde tudo
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            // 2. Mostra a Linha de Envase clicada
+            document.getElementById('view-' + viewName).classList.add('active');
+            document.getElementById('btn-' + viewName).classList.add('active');
+            
+            // 3. Atualiza o Título baseada na Linha
+            const headerTitle = document.getElementById('header-title');
+            if(viewName === 'linha4') headerTitle.innerText = 'Enchedora PET 2L - Linha 4';
+            else if(viewName === 'linha5') headerTitle.innerText = 'Enchedora Kapo - Linha 5';
+            else if(viewName === 'linha6') headerTitle.innerText = 'Enchedora PET 1.5L - Linha 6';
+            else if(viewName === 'linha7') headerTitle.innerText = 'Enchedora PET 2.25L - Linha 7';
+        }
+
         // --- INICIALIZAÇÃO AUTOMÁTICA AO ABRIR A PÁGINA ---
         window.onload = function() {
             // Inicia renderizando a aba de Quase-Xarope por padrão
@@ -476,4 +698,3 @@
     </script>
 </body>
 </html>
-```eof
