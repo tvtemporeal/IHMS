@@ -26,10 +26,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Urbanist', sans-serif; background-color: var(--bg-base); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* TELA DE LOGIN ESTILO IHM */
+        /* INTERFACE DE AUTENTICAÇÃO */
         #login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index: 1000; display: flex; }
-        .login-diagram-side { flex: 1.2; background: #050505; border-right: 2px solid var(--border-panel); display: flex; align-items: center; justify-content: center; padding: 40px; position: relative; }
-        .login-form-side { flex: 0.8; display: flex; flex-direction: column; justify-content: center; padding: 60px; background: #000; }
+        .login-diagram-side { flex: 1.2; background: #050505; border-right: 2px solid var(--border-panel); display: flex; align-items: center; justify-content: center; padding: 40px; position: relative; overflow: hidden; }
+        .login-form-side { flex: 0.8; display: flex; flex-direction: column; justify-content: center; padding: 60px; background: #000; overflow-y: auto; }
         
         .ihm-schematic { width: 100%; max-width: 600px; height: 400px; position: relative; border: 1px dashed #333; border-radius: 8px; background: #020202; }
         .schematic-tank { position: absolute; left: 40px; top: 100px; width: 140px; height: 220px; background: linear-gradient(90deg, #2b2b2b, #555, #222); border: 2px solid #666; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -39,11 +39,8 @@
         .schematic-pipe { position: absolute; left: 180px; top: 200px; width: 202px; height: 12px; background: #1a1a1a; border-top: 2px solid #444; border-bottom: 2px solid #444; }
         .pipe-flow { position: absolute; width: 40px; height: 100%; background: var(--accent-red); opacity: 0.6; animation: flow 3s linear infinite; }
         
-        /* ANIMAÇÕES GERAIS */
         @keyframes flow { 0% { left: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { left: 162px; opacity: 0; } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes vertical-drop { 0% { top: -60px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 260px; opacity: 0; } }
 
         .login-title-femsa { font-size: 42px; font-weight: 700; color: var(--accent-red); letter-spacing: 1px; margin-bottom: 5px; }
         .login-subtitle { font-size: 14px; color: var(--text-muted); text-transform: uppercase; font-family: 'Azeret Mono', monospace; margin-bottom: 40px; }
@@ -54,17 +51,17 @@
         .login-btn { background: var(--accent-red); color: #fff; border: none; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
         .login-btn:hover { background: #b8070f; }
 
-        /* NAVEGAÇÃO E SIDEBAR */
-        .sidebar { width: 260px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-panel); display: flex; flex-direction: column; padding: 20px 0; z-index: 10; }
+        /* NAVEGAÇÃO LATERAL */
+        .sidebar { width: 260px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-panel); display: flex; flex-direction: column; padding: 20px 0; z-index: 10; flex-shrink: 0; }
         .logo-area { padding: 0 20px 30px; border-bottom: 1px solid var(--border-panel); margin-bottom: 20px; }
         .logo-area h1 { font-size: 32px; color: var(--accent-red); letter-spacing: 2px; }
-        .logo-area p { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-family: 'Azeret Mono', monospace; margin-top: 5px; }
-        .nav-menu { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; }
+        .logo-area p { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-family: 'Azeret Mono', monospace; margin-top: 5px; line-height: 1.4; }
+        .nav-menu { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; overflow-y: auto; }
         .nav-btn { background: transparent; border: none; color: var(--text-muted); padding: 15px 20px; border-radius: 8px; cursor: pointer; text-align: left; font-size: 16px; font-weight: 600; transition: all 0.2s ease; display: flex; align-items: center; gap: 15px; }
         .nav-btn:hover { background-color: rgba(38, 38, 38, 0.4); color: var(--text-main); }
         .nav-btn.active { background-color: var(--border-panel); color: var(--accent-red); border-left: 4px solid var(--accent-red); }
 
-        /* LAYOUT PRINCIPAL */
+        /* VISÕES DA APLICAÇÃO */
         .main-content { flex-grow: 1; display: flex; flex-direction: column; background: radial-gradient(circle at 50% 50%, #0d0d0d 0%, #000000 100%); overflow-y: auto; }
         .top-header { padding: 25px 40px; border-bottom: 1px solid var(--border-panel); display: flex; justify-content: space-between; align-items: center; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 5; }
         .view-title { font-size: 22px; font-weight: 700; }
@@ -73,9 +70,10 @@
 
         .view-section { display: none; padding: 40px; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .tank-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
 
-        /* ARQUITETURA DO TANQUE */
+        /* ARQUITETURA DO ATIVO (TANQUE INOX) */
         .tank-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; }
         .tank-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-panel); padding-bottom: 10px; }
         .tank-name { font-size: 20px; font-weight: 700; font-family: 'Azeret Mono', monospace; }
@@ -85,7 +83,7 @@
         .tank-glass-gauge-inner { position: absolute; left: 15px; top: 15px; bottom: 15px; width: 18px; background: rgba(0, 0, 0, 0.7); border: 1px solid #333; border-radius: 8px; padding: 2px; }
         .gauge-liquid { position: absolute; bottom: 2px; left: 2px; width: calc(100% - 4px); border-radius: 6px; transition: height 0.8s ease; }
         
-        /* CORES POR FAIXAS OPERACIONAIS */
+        /* CORES DINÂMICAS DE FLUIDO */
         .liquid-red { background: linear-gradient(90deg, #990000, #e50914, #ff4d4d); box-shadow: 0 0 10px rgba(229,9,20,0.5); }
         .liquid-green { background: linear-gradient(90deg, #006633, #00cc66, #33ff99); box-shadow: 0 0 10px rgba(0,204,102,0.5); }
         .liquid-orange { background: linear-gradient(90deg, #cc6600, #ff8c00, #ffb366); box-shadow: 0 0 10px rgba(255,140,0,0.5); }
@@ -94,33 +92,40 @@
         .display-percent-inner { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-family: 'Azeret Mono', monospace; font-size: 16px; font-weight: 700; background: rgba(0, 0, 0, 0.75); padding: 6px 10px; border-radius: 6px; border: 1px solid #444; }
 
         .tank-data { width: 100%; display: flex; flex-direction: column; gap: 6px; }
-        .data-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; border: 1px solid #1c1c1c; }
+        .data-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; border: 1px solid #1c1c1c; width: 100%; }
         .data-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
-        .data-value { font-family: 'Azeret Mono', monospace; font-size: 13px; font-weight: 700; }
-        .edit-tank-btn { background: #262626; border: none; color: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 10px; width: 100%; font-weight: bold; transition: 0.2s; }
+        .data-value { font-family: 'Azeret Mono', monospace; font-size: 13px; font-weight: 700; text-align: right; }
+        .edit-tank-btn { background: #262626; border: none; color: #fff; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-top: 10px; width: 100%; font-weight: bold; transition: 0.2s; }
         .edit-tank-btn:hover { background: var(--accent-red); }
 
         /* CABINES OPERACIONAIS DAS ENCHEDORAS */
         .line-panel-container { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: start; }
-        .synoptic-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 30px; min-height: 480px; display: flex; flex-direction: column; justify-content: center; }
-        .machine-block-layout { display: flex; align-items: center; justify-content: center; position: relative; background: #050505; border-radius: 8px; height: 380px; }
+        .synoptic-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 30px; min-height: 480px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .machine-block-layout { display: flex; align-items: center; justify-content: center; position: relative; background: #050505; border-radius: 8px; height: 380px; overflow: hidden; }
         .conveyor-belt { position: absolute; width: 100%; height: 12px; background: #262626; bottom: 40px; left: 0; z-index: 1; border-top: 2px solid #404040; }
         
-        .large-filler-module { width: 380px; height: 340px; background: linear-gradient(145deg, #222 0%, #111 50%, #1a1a1a 100%); border: 2px solid #444; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; border-left: 20px solid rgba(255, 255, 255, 0.03); border-right: 20px solid rgba(255, 255, 255, 0.03); overflow: hidden; }
+        .large-filler-module { width: 380px; height: 340px; background: linear-gradient(145deg, #222 0%, #111 50%, #1a1a1a 100%); border: 2px solid #444; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; border-left: 20px solid rgba(255, 255, 255, 0.03); border-right: 20px solid rgba(255, 255, 255, 0.03); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .large-filler-module::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 25px; background: linear-gradient(90deg, #444, #666, #444); border-bottom: 2px solid #222; z-index: 5; }
         .large-filler-module::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 25px; background: linear-gradient(90deg, #333, #555, #333); border-top: 2px solid #111; z-index: 5; }
+        .module-tag { position: absolute; top: 3px; z-index: 6; font-family: 'Azeret Mono', monospace; font-size: 11px; color: #fff; background: var(--accent-red); padding: 2px 12px; border-radius: 4px; font-weight: 700; }
 
-        /* MÓDULO PET */
         .pet-carousel { width: 240px; height: 240px; border: 3px dashed #555; border-radius: 50%; position: relative; animation: spin 15s linear infinite; }
         .pet-bottle { position: absolute; top: 50%; left: 50%; font-size: 28px; color: var(--accent-red); transform: translate(-50%, -50%) rotate(calc(36deg * var(--i))) translateY(-105px); }
         
-        /* MÓDULO KAPO RESTAURADO */
         .kapo-carousel { width: 140px; height: 260px; background: rgba(0,0,0,0.5); border-left: 2px dashed #444; border-right: 2px dashed #444; position: relative; overflow: hidden; }
         .kapo-pouch { position: absolute; width: 32px; height: 48px; background: linear-gradient(180deg, #aaa 15%, var(--accent-purple) 15%); border-radius: 3px 3px 6px 6px; left: 50%; transform: translateX(-50%); animation: vertical-drop 4s linear infinite; top: -60px; box-shadow: inset 0 -5px 10px rgba(0,0,0,0.4), 0 5px 10px rgba(0,0,0,0.5); }
         .kapo-pouch::after { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: #fff; border-radius: 50%; opacity: 0.8; }
+        @keyframes vertical-drop { 0% { top: -50px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 280px; opacity: 0; } }
+
+        #view-linha5 .module-tag { background: var(--accent-orange); color: #000; }
+        #view-linha6 .module-tag { background: var(--accent-purple); }
+        #view-linha6 .pet-bottle { color: var(--accent-purple); }
+        #view-linha7 .module-tag { background: var(--accent-green); color: #000; }
+        #view-linha7 .pet-bottle { color: var(--accent-green); }
 
         /* TELA DE PREENCHIMENTO RÁPIDO */
-        .quick-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; }
+        .quick-table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; }
         .quick-table th, .quick-table td { padding: 12px; border: 1px solid var(--border-panel); text-align: left; }
         .quick-table th { background: #0a0a0a; color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-family: 'Azeret Mono', monospace; }
         .quick-table td { background: var(--bg-panel); }
@@ -134,19 +139,62 @@
         .cip-field-group { display: flex; flex-direction: column; gap: 12px; }
         .cip-grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .industrial-input, .industrial-select { background: #000; border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 6px; font-family: 'Azeret Mono', monospace; font-size: 13px; width: 60%; text-align: right; }
-        .save-line-btn { background: var(--accent-green); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; transition: 0.2s; }
+        .save-line-btn { background: var(--accent-green); color: #000; border: none; padding: 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; transition: 0.2s; font-size: 15px; }
         .save-line-btn:hover { opacity: 0.9; }
         
-        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; }
-        .modal-card { background: var(--bg-panel); border: 2px solid #444; border-radius: 12px; width: 400px; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
-        .modal-row { display: flex; justify-content: space-between; align-items: center; }
-        .modal-actions { display: flex; gap: 10px; }
-        .modal-btn { flex:1; padding: 12px; border-radius: 6px; border:none; font-weight: bold; cursor: pointer; }
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: var(--bg-panel); border: 2px solid #444; border-radius: 12px; width: 100%; max-width: 400px; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
+        .modal-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .modal-row label { flex: 1; min-width: 100px; }
+        .modal-row input { flex: 2; min-width: 150px; width: auto; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .modal-btn { flex:1; padding: 12px; border-radius: 6px; border:none; font-weight: bold; cursor: pointer; font-size: 14px; }
+
+        /* =========================================================
+           REGRAS DE RESPONSIVIDADE (MEDIA QUERIES PARA MOBILE)
+           ========================================================= */
+        @media (max-width: 1024px) {
+            .tank-grid { grid-template-columns: repeat(2, 1fr); }
+            .line-panel-container { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-panel); padding: 15px; }
+            .nav-menu { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+            .nav-btn { flex: 1 1 45%; justify-content: center; text-align: center; }
+            
+            .main-content { overflow-y: visible; }
+            .top-header { flex-direction: column; gap: 15px; text-align: center; padding: 20px; }
+            .view-section { padding: 20px; }
+            .tank-grid { grid-template-columns: 1fr; }
+            
+            /* Ajuste na Tela de Login para Mobile */
+            #login-screen { flex-direction: column; overflow-y: auto; }
+            .login-diagram-side { padding: 20px; min-height: 300px; flex: none; border-right: none; border-bottom: 1px solid var(--border-panel); }
+            .ihm-schematic { transform: scale(0.65); transform-origin: center; }
+            .login-form-side { padding: 30px 20px; flex: none; }
+            
+            /* Ajuste dos Painéis e Inputs */
+            .cip-grid-half { grid-template-columns: 1fr; }
+            .industrial-input, .industrial-select { width: 100%; text-align: left; }
+            .data-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .data-value { text-align: left; }
+            
+            /* Scale nas Enchedoras para caber na tela sem quebrar a animação */
+            .large-filler-module { transform: scale(0.8); transform-origin: center; }
+        }
+
+        @media (max-width: 480px) {
+            .nav-btn { flex: 1 1 100%; }
+            .ihm-schematic { transform: scale(0.5); }
+            .large-filler-module { transform: scale(0.65); }
+            .login-title-femsa { font-size: 32px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- MONITOR DE LOGIN -->
     <div id="login-screen">
         <div class="login-diagram-side">
             <div class="ihm-schematic">
@@ -180,7 +228,6 @@
         </div>
     </div>
 
-    <!-- PAINEL CENTRAL DE OPERAÇÕES -->
     <aside class="sidebar">
         <div class="logo-area">
             <h1>IHMS</h1>
@@ -207,21 +254,21 @@
         <section id="view-qx" class="view-section active"><div class="tank-grid" id="grid-qx"></div></section>
         <section id="view-bebidas" class="view-section"><div class="tank-grid" id="grid-bebidas"></div></section>
         
-        <!-- MATRIZ DE PREENCHIMENTO RÁPIDO -->
         <section id="view-quick" class="view-section">
             <div style="background:var(--bg-panel); border:1px solid var(--border-panel); padding:25px; border-radius:12px;">
                 <h3 style="margin-bottom:15px; text-transform:uppercase; color:var(--accent-red);">Matriz de Ajuste Rápido de Ativos</h3>
-                <table class="quick-table">
-                    <thead>
-                        <tr><th>Tanque</th><th>Volume Atual (L)</th><th>Produto Ativo</th><th>Nº Batch</th></tr>
-                    </thead>
-                    <tbody id="quick-fill-tbody"></tbody>
-                </table>
-                <button class="save-line-btn" style="margin-top:20px; font-size:15px;" onclick="submitQuickFillMatrix()">Transmitir Todos os Tanques para a Nuvem</button>
+                <div class="table-responsive">
+                    <table class="quick-table">
+                        <thead>
+                            <tr><th>Tanque</th><th>Volume Atual (L)</th><th>Produto Ativo</th><th>Nº Batch</th></tr>
+                        </thead>
+                        <tbody id="quick-fill-tbody"></tbody>
+                    </table>
+                </div>
+                <button class="save-line-btn" style="margin-top:20px;" onclick="submitQuickFillMatrix()">Transmitir Todos os Tanques para a Nuvem</button>
             </div>
         </section>
 
-        <!-- SUB-ESTAÇÕES DAS ENCHEDORAS -->
         <section id="view-linha4" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
@@ -295,12 +342,11 @@
         </section>
     </main>
 
-    <!-- POP-UP INDIVIDUAL DE AJUSTE -->
     <div class="modal-overlay" id="tank-modal">
         <div class="modal-card">
             <div class="modal-header" id="modal-tank-title">Ajustar Parâmetros TQ-</div>
             <input type="hidden" id="modal-tank-id">
-            <div class="modal-row"><label>Volume Atual (L)</label><input type="number" id="modal-tank-vol" class="industrial-input"></div>
+            <div class="modal-row"><label>Volume (L)</label><input type="number" id="modal-tank-vol" class="industrial-input"></div>
             <div class="modal-row"><label>Produto</label><input type="text" id="modal-tank-prod" class="industrial-input"></div>
             <div class="modal-row"><label>Nº Batch</label><input type="text" id="modal-tank-batch" class="industrial-input"></div>
             <div class="modal-actions">
@@ -318,7 +364,6 @@
         let globalTanksCached = [];
         let syncInterval;
 
-        // VALIDAÇÃO INICIAL DA SESSÃO SALVA
         window.onload = function() {
             const savedUser = localStorage.getItem('ihms_user');
             if (savedUser) {
@@ -327,7 +372,6 @@
             }
         };
 
-        // ENTRADA DIRETA NA INTERFACE INDUSTRIAL
         function iniciarSistema(auth) {
             document.getElementById('login-screen').style.display = 'none';
             let isUserAdmin = (auth.adm === true || auth.adm === "TRUE" || auth.adm === "true");
@@ -344,7 +388,6 @@
             
             if(!br || !senha) { alert("Preencha os campos obrigatórios!"); return; }
 
-            // BYPASS SEGURO E DEFINITIVO PARA O SEU ADM
             if (br === "5758236" && senha === "291201") {
                 let localAuth = { found: true, valid: true, name: "JOÃO PEDRO", adm: true };
                 localStorage.setItem('ihms_user', JSON.stringify(localAuth));
@@ -352,13 +395,12 @@
                 return;
             }
 
-            // FLUXO DE CADASTRO (PARA OUTROS OPERADORES)
             if(isRegisteredMode) {
                 let nome = document.getElementById('login-nome').value;
                 let repetir = document.getElementById('login-repetir').value;
                 if(senha !== repetir) { alert("As senhas digitadas não conferem!"); return; }
                 
-                btn.innerText = "Sincronizando e Gravando Ativo...";
+                btn.innerText = "Sincronizando...";
                 
                 try {
                     let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "register_user", br: br, nome: nome, senha: senha }) });
@@ -366,9 +408,7 @@
                         let newAuth = { found: true, valid: true, name: nome, adm: false };
                         localStorage.setItem('ihms_user', JSON.stringify(newAuth));
                         iniciarSistema(newAuth);
-                    } else {
-                        throw new Error("Falha no servidor");
-                    }
+                    } else { throw new Error("Falha no servidor"); }
                 } catch (error) {
                     alert("Erro na gravação. Garanta que o Apps Script foi publicado como Nova Versão.");
                     btn.innerText = "Confirmar Primeiro Acesso";
@@ -376,8 +416,7 @@
                 return;
             }
 
-            // CONSULTA REGULAR DE OUTROS USUÁRIOS NA ABA DA PLANILHA
-            btn.innerText = "Consultando Banco de Dados...";
+            btn.innerText = "Consultando...";
             try {
                 let response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "check_login", br: br, senha: senha }) });
                 let auth = await response.json();
