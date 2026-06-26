@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IHMS - Controle Industrial</title>
+    <!-- Fontes do Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Ícones FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* VARIÁVEIS DE COR (TEMA INDUSTRIAL) */
+        :root {
+            --bg-base: #020617;      /* Fundo escuro principal */
+            --bg-panel: #0f172a;     /* Fundo dos painéis/cards */
+            --bg-sidebar: #0b1120;   /* Fundo do menu lateral */
+            --border-color: #1e293b; /* Cor das bordas */
+            --text-main: #f8fafc;    /* Texto principal (claro) */
+            --text-muted: #94a3b8;   /* Texto secundário (cinza) */
+            --accent-green: #00ff88; /* Verde Neon para volumes e status */
+            --accent-blue: #00d4ff;  /* Azul para destaques */
+            --danger-red: #ff3366;   /* Vermelho para tanques vazios/alerta */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Urbanist', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 1. MENU LATERAL (SIDEBAR) */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            z-index: 10;
+        }
+
+        .logo-area {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .logo-area h1 {
+            font-size: 32px;
+            color: var(--accent-blue);
+            letter-spacing: 2px;
+        }
+
+        .logo-area p {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Azeret Mono', monospace;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 0 10px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Urbanist', sans-serif;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-btn i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(30, 41, 59, 0.5);
+            color: var(--text-main);
+        }
+
+        .nav-btn.active {
+            background-color: var(--border-color);
+            color: var(--accent-green);
+            border-left: 4px solid var(--accent-green);
+        }
+
+        /* 2. ÁREA PRINCIPAL */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at 100% 0%, rgba(0, 212, 255, 0.03) 0%, transparent 40%),
+                        radial-gradient(circle at 0% 100%, rgba(0, 255, 136, 0.03) 0%, transparent 40%);
+            overflow-y: auto;
+        }
+
+        .top-header {
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .view-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .status-system {
+            font-family: 'Azeret Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        /* 3. SEÇÕES DE CONTEÚDO (VIEWS) */
+        .view-section {
+            display: none; /* Escondido por padrão */
+            padding: 40px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 4. GRID DE TANQUES */
+        .tank-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 colunas */
+            gap: 25px;
+        }
+
+        /* Bebidas tem 2 tanques, centralizamos usando um grid menor */
+        #view-bebidas .tank-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        /* 5. DESIGN DO TANQUE (CARD) */
+        .tank-card {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .tank-card:hover {
+            transform: translateY(-5px);
+            border-color: #334155;
+        }
+
+        .tank-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .tank-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .tank-cap {
+            font-family: 'Azeret Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: rgba(30, 41, 59, 0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* Gráfico do Tanque Físico */
+        .tank-graphic {
+            width: 100px;
+            height: 220px;
+            background-color: #020617;
+            border: 3px solid var(--border-color);
+            border-radius: 8px; /* Cantos arredondados */
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .tank-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(0deg, #00b09b, #96c93d); /* Gradiente Verde Padrão */
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Cores dinâmicas para o preenchimento */
+        .fill-blue { background: linear-gradient(0deg, #005c97, #363795); }
+        .fill-orange { background: linear-gradient(0deg, #f12711, #f5af19); }
+        .fill-empty { background: transparent; }
+
+        .tank-percent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Azeret Mono', monospace;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            z-index: 2;
+        }
+
+        /* Informações Dinâmicas (Volume, Produto, Batch) */
+        .tank-data {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .data-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .data-value {
+            font-family: 'Azeret Mono', monospace;
+            font-size: 14px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            text-align: right;
+        }
+        
+        .data-value.vol-value {
+            color: var(--accent-green);
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. MENU LATERAL -->
+    <aside class="sidebar">
+        <div class="logo-area">
+            <h1>IHMS</h1>
+            <p>Controle Industrial</p>
+        </div>
+        <nav class="nav-menu">
+            <!-- Botão Quase-Xarope -->
+            <button class="nav-btn active" onclick="switchView('qx')" id="btn-qx">
+                <i class="fa-solid fa-industry"></i>
+                Quase-Xarope
+            </button>
+            <!-- Botão Bebidas -->
+            <button class="nav-btn" onclick="switchView('bebidas')" id="btn-bebidas">
+                <i class="fa-solid fa-wine-glass-empty"></i>
+                Bebidas
+            </button>
+        </nav>
+    </aside>
+
+    <!-- 2. ÁREA PRINCIPAL -->
+    <main class="main-content">
+        <!-- Topo -->
+        <header class="top-header">
+            <h2 class="view-title" id="header-title">Módulo Quase-Xarope (TQs 510-517)</h2>
+            <div class="status-system">
+                <div class="status-dot"></div>
+                SISTEMA ONLINE (SIMULAÇÃO)
+            </div>
+        </header>
+
+        <!-- VIEW: QUASE-XAROPE (8 Tanques) -->
+        <section id="view-qx" class="view-section active">
+            <div class="tank-grid" id="grid-qx">
+                <!-- Os tanques serão injetados aqui pelo JavaScript -->
+            </div>
+        </section>
+
+        <!-- VIEW: BEBIDAS (2 Tanques) -->
+        <section id="view-bebidas" class="view-section">
+            <div class="tank-grid" id="grid-bebidas">
+                <!-- Os tanques serão injetados aqui pelo JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 3. LÓGICA DO APLICATIVO (JAVASCRIPT) -->
+    <script>
+        // --- BASE DE DADOS SIMULADA (Até conectarmos no Google Sheets) ---
+
+        // Array dos 8 tanques de Quase-Xarope (Capacidade: 32.000 L)
+        const dataQX = [
+            { id: '510', max: 32000, vol: 24500, prod: 'Xarope Cola', batch: 'B-8801' },
+            { id: '511', max: 32000, vol: 16000, prod: 'Xarope Laranja', batch: 'B-8802' },
+            { id: '512', max: 32000, vol: 0,     prod: 'Vazio / CIP', batch: '-' },
+            { id: '513', max: 32000, vol: 31000, prod: 'Xarope Limão', batch: 'B-8804' },
+            { id: '514', max: 32000, vol: 8000,  prod: 'Xarope Uva', batch: 'B-8805' },
+            { id: '515', max: 32000, vol: 0,     prod: 'Vazio / CIP', batch: '-' },
+            { id: '516', max: 32000, vol: 28000, prod: 'Xarope Guaraná', batch: 'B-8807' },
+            { id: '517', max: 32000, vol: 15500, prod: 'Xarope Tônica', batch: 'B-8808' }
+        ];
+
+        // Array dos 2 tanques de Bebidas (Capacidade: 20.000 L)
+        const dataBebidas = [
+            { id: '701', max: 20000, vol: 18500, prod: 'Bebida Pronta Cola', batch: 'P-9011' },
+            { id: '702', max: 20000, vol: 4200,  prod: 'Bebida Pronta Uva', batch: 'P-9012' }
+        ];
+
+        // --- FUNÇÃO PARA CRIAR OS CARDS DOS TANQUES NA TELA ---
+        function renderTanks(containerId, tanksData) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Limpa o container
+
+            tanksData.forEach(tank => {
+                // Cálculo de Porcentagem
+                let percent = (tank.vol / tank.max) * 100;
+                percent = Math.round(percent);
+
+                // Lógica de cores do tanque baseada no produto ou status
+                let fillClass = '';
+                if (tank.vol === 0) fillClass = 'fill-empty';
+                else if (percent > 80) fillClass = 'fill-blue';
+                else fillClass = ''; // Usa o verde padrão
+
+                // Formatação do volume com ponto milhar (ex: 32.000)
+                let volFormatted = tank.vol.toLocaleString('pt-BR');
+                let maxFormatted = (tank.max / 1000) + 'k'; // Transforma 32000 em 32k
+
+                // Montagem do HTML de cada tanque
+                const tankHTML = `
+                    <div class="tank-card">
+                        <div class="tank-header">
+                            <span class="tank-name">TQ ${tank.id}</span>
+                            <span class="tank-cap">MAX: ${maxFormatted}L</span>
+                        </div>
+                        
+                        <div class="tank-graphic">
+                            <div class="tank-fill ${fillClass}" style="height: ${percent}%;"></div>
+                            <div class="tank-percent">${percent}%</div>
+                        </div>
+
+                        <div class="tank-data">
+                            <div class="data-row">
+                                <span class="data-label"><i class="fa-solid fa-droplet"></i> Volume</span>
+                                <span class="data-value vol-value">${volFormatted} L</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label"><i class="fa-solid fa-flask"></i> Produto</span>
+                                <span class="data-value" style="color: #f8fafc;">${tank.prod}</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label"><i class="fa-solid fa-barcode"></i> Batch</span>
+                                <span class="data-value">${tank.batch}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Insere no container
+                container.innerHTML += tankHTML;
+            });
+        }
+
+        // --- FUNÇÃO PARA NAVEGAR ENTRE OS MÓDULOS ---
+        function switchView(viewName) {
+            // 1. Esconde todas as seções e tira a classe "active" dos botões
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            // 2. Mostra a seção clicada e marca o botão
+            if(viewName === 'qx') {
+                document.getElementById('view-qx').classList.add('active');
+                document.getElementById('btn-qx').classList.add('active');
+                document.getElementById('header-title').innerText = 'Módulo Quase-Xarope (TQs 510-517)';
+                // Renderiza os tanques QX
+                renderTanks('grid-qx', dataQX);
+            } 
+            else if(viewName === 'bebidas') {
+                document.getElementById('view-bebidas').classList.add('active');
+                document.getElementById('btn-bebidas').classList.add('active');
+                document.getElementById('header-title').innerText = 'Módulo Bebidas (TQs 701-702)';
+                // Renderiza os tanques Bebidas
+                renderTanks('grid-bebidas', dataBebidas);
+            }
+        }
+
+        // --- INICIALIZAÇÃO AUTOMÁTICA AO ABRIR A PÁGINA ---
+        window.onload = function() {
+            // Inicia renderizando a aba de Quase-Xarope por padrão
+            renderTanks('grid-qx', dataQX);
+        };
+
+    </script>
+</body>
+</html>
+```eof
