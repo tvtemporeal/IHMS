@@ -26,8 +26,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Urbanist', sans-serif; background-color: var(--bg-base); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* PAINEL INDUSTRIAL DE LOGIN */
-        #login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index: 1000; display: flex; }
+        /* TELA DE LOGIN ABSOLUTA (CORRIGIDA) */
+        #login-screen { position: fixed; top:0; left:0; width:100vw; height:100vh; background: #000; z-index: 9999; display: flex; }
         .login-diagram-side { flex: 1.2; background: #050505; border-right: 2px solid var(--border-panel); display: flex; align-items: center; justify-content: center; padding: 40px; position: relative; overflow: hidden; }
         .login-form-side { flex: 0.8; display: flex; flex-direction: column; justify-content: center; padding: 60px; background: #000; overflow-y: auto; position: relative; }
         
@@ -48,11 +48,17 @@
         .input-block label { font-size: 12px; text-transform: uppercase; color: var(--text-muted); font-family: 'Azeret Mono', monospace; }
         .login-input { background: #111; border: 1px solid #333; padding: 14px; border-radius: 8px; color: #fff; font-size: 15px; width: 100%; }
         .login-input:focus { border-color: var(--accent-red); outline: none; }
+        
+        /* CORREÇÃO DO AUTOFILL DO CHROME (Impede fundo branco nos campos de login) */
+        input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #111 inset !important; -webkit-text-fill-color: white !important; transition: background-color 5000s ease-in-out 0s;
+        }
+
         .login-btn { background: var(--accent-red); color: #fff; border: none; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; margin-top: 10px; position: relative; z-index: 2; }
         .login-btn:hover { background: #b8070f; }
 
-        /* NAVEGAÇÃO LATERAL */
-        .sidebar { width: 260px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-panel); display: flex; flex-direction: column; padding: 20px 0; z-index: 3000; flex-shrink: 0; }
+        /* NAVEGAÇÃO LATERAL (MENU) */
+        .sidebar { width: 260px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-panel); display: flex; flex-direction: column; padding: 20px 0; z-index: 10; flex-shrink: 0; }
         .logo-area { padding: 0 20px 30px; border-bottom: 1px solid var(--border-panel); margin-bottom: 20px; }
         .logo-area h1 { font-size: 32px; color: var(--accent-red); letter-spacing: 2px; }
         .logo-area p { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-family: 'Azeret Mono', monospace; margin-top: 5px; line-height: 1.4; }
@@ -120,7 +126,7 @@
         .kapo-pouch::after { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: #fff; border-radius: 50%; opacity: 0.8; }
         @keyframes vertical-drop { 0% { top: -60px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 260px; opacity: 0; } }
 
-        /* SISTEMA DE SPRAY BALL (CIP) */
+        /* SISTEMA DE SPRAY BALL E EFEITO DE GOTAS DE ÁGUA (CIP) */
         .cip-spray-system { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; flex-direction: column; align-items: center; }
         .mode-cip .cip-spray-system { display: flex; }
         .mode-cip .pet-carousel, .mode-cip .kapo-carousel { display: none; } 
@@ -130,18 +136,22 @@
         .spray-ball::after { content: ''; position: absolute; top: 18px; left: 6px; width: 4px; height: 4px; background: #222; border-radius: 50%; box-shadow: 8px 2px #222, 14px -2px #222, 4px 8px #222, 10px 8px #222; opacity: 0.6; }
         
         .spray-water {
-            width: 320px; height: 280px;
-            background: linear-gradient(to bottom, rgba(0, 200, 255, 0.1), rgba(0, 200, 255, 0.4));
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            width: 300px; height: 280px;
             margin-top: -15px; position: relative; overflow: hidden; z-index: 11;
-            filter: drop-shadow(0 0 15px rgba(0,200,255,0.5));
+            clip-path: polygon(50% 0%, 15% 100%, 85% 100%);
         }
-        .spray-water::before {
-            content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 200%;
-            background: repeating-linear-gradient(to bottom, transparent 0, transparent 8px, rgba(255,255,255,0.7) 12px, transparent 16px);
-            animation: spray-fall 0.25s linear infinite;
+        .spray-water::after {
+            content: '';
+            position: absolute; top: -100%; left: 0; width: 100%; height: 200%;
+            /* EFEITO DE CHUVA/GOTAS FINAS */
+            background-image: 
+                radial-gradient(circle, rgba(0, 200, 255, 0.7) 10%, transparent 20%),
+                radial-gradient(circle, rgba(0, 200, 255, 0.5) 10%, transparent 20%);
+            background-size: 14px 28px;
+            background-position: 0 0, 7px 14px;
+            animation: chuveiro-fall 0.4s linear infinite;
         }
-        @keyframes spray-fall { 100% { transform: translateY(50%); } }
+        @keyframes chuveiro-fall { 100% { transform: translateY(50%); } }
 
         #view-linha5 .module-tag { background: var(--accent-orange); color: #000; }
         #view-linha6 .module-tag { background: var(--accent-purple); }
@@ -157,7 +167,6 @@
         .quick-table td { background: var(--bg-panel); }
         .quick-input { background: #000; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 4px; width: 100%; font-family: 'Azeret Mono', monospace; }
         .quick-input:focus { border-color: var(--accent-red); outline: none; }
-        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
         /* CIP COMPONENTES */
         .cip-control-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 25px; }
@@ -214,11 +223,11 @@
         @media (max-width: 768px) {
             body { flex-direction: column; overflow-y: auto; }
             
-            /* MENU OCULTO POR PADRÃO (CELULAR) */
-            .sidebar { position: fixed; top: 0; left: -100%; width: 260px; height: 100vh; transition: left 0.3s ease; border-right: 1px solid var(--border-panel); border-bottom: none; }
+            /* MENU LATERAL (CELULAR) - ESCONDIDO POR PADRÃO */
+            .sidebar { position: fixed; top: 0; left: -100%; width: 260px; height: 100vh; transition: left 0.3s ease; border-right: 1px solid var(--border-panel); border-bottom: none; z-index: 3000; }
             .sidebar.open { left: 0; }
             
-            #mobile-menu-btn { display: block; } /* Mostra o botão hambúrguer */
+            #mobile-menu-btn { display: block; }
             
             .main-content { overflow-y: visible; width: 100%; }
             .top-header { flex-direction: row; justify-content: flex-start; text-align: left; padding: 20px; }
@@ -227,7 +236,7 @@
             .view-section { padding: 20px; }
             .tank-grid { grid-template-columns: 1fr; }
             
-            /* TELA DE LOGIN MOBILE (CORREÇÃO DA ANIMAÇÃO QUEBRADA) */
+            /* TELA DE LOGIN MOBILE LIMPA (SEM ANIMAÇÃO ESTOURADA) */
             #login-screen { display: block; overflow-y: auto; }
             .login-diagram-side { display: none !important; }
             .login-form-side { 
@@ -489,19 +498,13 @@
             
             if(!br || !senha) { alert("Preencha os campos obrigatórios!"); return; }
 
-            if (br === "5758236" && senha === "291201") {
-                let localAuth = { found: true, valid: true, name: "JOÃO PEDRO", adm: true };
-                localStorage.setItem('ihms_user', JSON.stringify(localAuth));
-                iniciarSistema(localAuth);
-                return;
-            }
-
+            // LÓGICA DE CADASTRO PARA O BANCO DE DADOS
             if(isRegisteredMode) {
                 let nome = document.getElementById('login-nome').value;
                 let repetir = document.getElementById('login-repetir').value;
                 if(senha !== repetir) { alert("As senhas digitadas não conferem!"); return; }
                 
-                btn.innerText = "Sincronizando...";
+                btn.innerText = "Sincronizando com Banco de Dados...";
                 
                 try {
                     let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "register_user", br: br, nome: nome, senha: senha }) });
@@ -509,15 +512,16 @@
                         let newAuth = { found: true, valid: true, name: nome, adm: false };
                         localStorage.setItem('ihms_user', JSON.stringify(newAuth));
                         iniciarSistema(newAuth);
-                    } else { throw new Error("Falha no servidor"); }
+                    } else { throw new Error("Falha no servidor Google"); }
                 } catch (error) {
-                    alert("Erro na gravação. Garanta que o Apps Script foi publicado como Nova Versão.");
+                    alert("Erro! É necessário que o código do Apps Script seja implantado como NOVA VERSÃO.");
                     btn.innerText = "Confirmar Primeiro Acesso";
                 }
                 return;
             }
 
-            btn.innerText = "Consultando...";
+            // CONSULTA REGULAR DE USUÁRIOS NA PLANILHA
+            btn.innerText = "Consultando Permissões...";
             try {
                 let response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "check_login", br: br, senha: senha }) });
                 let auth = await response.json();
@@ -533,13 +537,13 @@
                         localStorage.setItem('ihms_user', JSON.stringify(auth));
                         iniciarSistema(auth);
                     } else {
-                        alert("Senha incorreta para este registro (BR)!");
+                        alert("Acesso negado: Senha Incorreta.");
                         btn.innerText = "Autenticar Sistema";
                     }
                 }
             } catch (err) {
                 console.error(err);
-                alert("Erro crítico de comunicação com a API Google.");
+                alert("Erro ao ler a planilha. Verifique se publicou como Nova Versão no Google Apps Script.");
                 btn.innerText = "Autenticar Sistema";
             }
         }
@@ -662,7 +666,7 @@
         function renderCipPanel(panelId, lineData, idNum) {
             const panel = document.getElementById(panelId);
             
-            // CORREÇÃO: Impede que a tela apague o que você está escrevendo/selecionando
+            // CORREÇÃO DA MUDANÇA DE TELA: Não recarrega o painel se você estiver digitando ou selecionando algo
             if (panel.innerHTML !== '' && panel.contains(document.activeElement)) {
                 return;
             }
@@ -702,7 +706,6 @@
             `;
         }
 
-        // LÓGICA DO MENU HAMBÚRGUER (CELULAR)
         function toggleMobileMenu() {
             const sidebar = document.getElementById('app-sidebar');
             const overlay = document.getElementById('mobile-sidebar-overlay');
@@ -783,7 +786,6 @@
         function switchView(view) {
             currentView = view;
             
-            // Fecha o menu lateral do celular se ele estiver aberto
             document.getElementById('app-sidebar').classList.remove('open');
             document.getElementById('mobile-sidebar-overlay').classList.remove('active');
 
@@ -800,7 +802,6 @@
         function switchLineView(lineKey) {
             currentView = lineKey;
             
-            // Fecha o menu lateral do celular se ele estiver aberto
             document.getElementById('app-sidebar').classList.remove('open');
             document.getElementById('mobile-sidebar-overlay').classList.remove('active');
 
