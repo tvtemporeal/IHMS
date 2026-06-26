@@ -26,7 +26,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Urbanist', sans-serif; background-color: var(--bg-base); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* INTERFACE DE AUTENTICAÇÃO */
+        /* PAINEL INDUSTRIAL DE LOGIN */
         #login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index: 1000; display: flex; }
         .login-diagram-side { flex: 1.2; background: #050505; border-right: 2px solid var(--border-panel); display: flex; align-items: center; justify-content: center; padding: 40px; }
         .login-form-side { flex: 0.8; display: flex; flex-direction: column; justify-content: center; padding: 60px; background: #000; }
@@ -61,7 +61,7 @@
         .nav-btn:hover { background-color: rgba(38, 38, 38, 0.4); color: var(--text-main); }
         .nav-btn.active { background-color: var(--border-panel); color: var(--accent-red); border-left: 4px solid var(--accent-red); }
 
-        /* VISÕES DA APLICAÇÃO */
+        /* VIEWS DO SISTEMA */
         .main-content { flex-grow: 1; display: flex; flex-direction: column; background: radial-gradient(circle at 50% 50%, #0d0d0d 0%, #000000 100%); overflow-y: auto; }
         .top-header { padding: 25px 40px; border-bottom: 1px solid var(--border-panel); display: flex; justify-content: space-between; align-items: center; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 5; }
         .view-title { font-size: 22px; font-weight: 700; }
@@ -73,7 +73,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .tank-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
 
-        /* ARQUITETURA DO ATIVO (TANQUE INOX) */
+        /* DESIGN DO TANQUE INTEIRIÇO */
         .tank-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; }
         .tank-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-panel); padding-bottom: 10px; }
         .tank-name { font-size: 20px; font-weight: 700; font-family: 'Azeret Mono', monospace; }
@@ -83,7 +83,7 @@
         .tank-glass-gauge-inner { position: absolute; left: 15px; top: 15px; bottom: 15px; width: 18px; background: rgba(0, 0, 0, 0.7); border: 1px solid #333; border-radius: 8px; padding: 2px; }
         .gauge-liquid { position: absolute; bottom: 2px; left: 2px; width: calc(100% - 4px); border-radius: 6px; transition: height 0.8s ease; }
         
-        /* CLASSES DINÂMICAS DE FLUIDO */
+        /* CORES POR FAIXAS OPERACIONAIS */
         .liquid-red { background: linear-gradient(90deg, #990000, #e50914, #ff4d4d); box-shadow: 0 0 10px rgba(229,9,20,0.5); }
         .liquid-green { background: linear-gradient(90deg, #006633, #00cc66, #33ff99); box-shadow: 0 0 10px rgba(0,204,102,0.5); }
         .liquid-orange { background: linear-gradient(90deg, #cc6600, #ff8c00, #ffb366); box-shadow: 0 0 10px rgba(255,140,0,0.5); }
@@ -98,7 +98,7 @@
         .edit-tank-btn { background: #262626; border: none; color: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 10px; width: 100%; font-weight: bold; transition: 0.2s; }
         .edit-tank-btn:hover { background: var(--accent-red); }
 
-        /* CABINES OPERACIONAIS DAS ENCHEDORAS */
+        /* CABINES REAIS DAS ENCHEDORAS */
         .line-panel-container { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: start; }
         .synoptic-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 30px; min-height: 480px; display: flex; flex-direction: column; justify-content: center; }
         .machine-block-layout { display: flex; align-items: center; justify-content: center; position: relative; background: #050505; border-radius: 8px; height: 380px; }
@@ -113,26 +113,18 @@
         .pet-bottle { position: absolute; top: 50%; left: 50%; font-size: 28px; color: var(--accent-red); transform: translate(-50%, -50%) rotate(calc(36deg * var(--i))) translateY(-105px); }
         
         .kapo-carousel { width: 140px; height: 260px; background: rgba(0,0,0,0.5); border-left: 2px dashed #444; border-right: 2px dashed #444; position: relative; overflow: hidden; }
-        .kapo-pouch { position: absolute; width: 32px; height: 48px; background: linear-gradient(180deg, #aaa 15%, var(--accent-purple) 15%); border-radius: 3px 3px 6px 6px; left: 50%; transform: translateX(-50%); animation: vertical-drop 4s linear infinite; top: -60px; box-shadow: inset 0 -5px 10px rgba(0,0,0,0.4), 0 5px 10px rgba(0,0,0,0.5); }
+        .kapo-pouch { position: absolute; width: 32px; height: 48px; background: linear-gradient(180deg, #aaa 15%, var(--accent-purple) 15%); border-radius: 3px 3px 6px 6px; left: 50%; transform: translateX(-50%); animation: vertical-drop 4s linear infinite; top: -60px; }
         .kapo-pouch::after { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: #fff; border-radius: 50%; opacity: 0.8; }
-        @keyframes vertical-drop { 0% { top: -50px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 280px; opacity: 0; } }
 
-        #view-linha5 .module-tag { background: var(--accent-orange); color: #000; }
-        #view-linha6 .module-tag { background: var(--accent-purple); }
-        #view-linha6 .pet-bottle { color: var(--accent-purple); }
-        #view-linha7 .module-tag { background: var(--accent-green); color: #000; }
-        #view-linha7 .pet-bottle { color: var(--accent-green); }
-
-        /* TELA DE AJUSTE EM MASSA */
+        /* AJUSTE EM MASSA (PREENCHIMENTO RÁPIDO) */
         .quick-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .quick-table th, .quick-table td { padding: 12px; border: 1px solid var(--border-panel); text-align: left; }
         .quick-table th { background: #0a0a0a; color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-family: 'Azeret Mono', monospace; }
         .quick-table td { background: var(--bg-panel); }
         .quick-input { background: #000; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 4px; width: 100%; font-family: 'Azeret Mono', monospace; }
         .quick-input:focus { border-color: var(--accent-red); outline: none; }
-        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-        /* CIP E CONTROLES */
+        /* CIP COMPONENTES */
         .cip-control-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 25px; }
         .cip-card-title { font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--accent-red); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-panel); padding-bottom: 10px; }
         .cip-field-group { display: flex; flex-direction: column; gap: 12px; }
@@ -150,7 +142,6 @@
 </head>
 <body>
 
-    <!-- LOGIN SCREEN -->
     <div id="login-screen">
         <div class="login-diagram-side">
             <div class="ihm-schematic">
@@ -184,7 +175,6 @@
         </div>
     </div>
 
-    <!-- MAIN CORE INTERFACE -->
     <aside class="sidebar">
         <div class="logo-area">
             <h1>IHMS</h1>
@@ -211,7 +201,6 @@
         <section id="view-qx" class="view-section active"><div class="tank-grid" id="grid-qx"></div></section>
         <section id="view-bebidas" class="view-section"><div class="tank-grid" id="grid-bebidas"></div></section>
         
-        <!-- AJUSTE EM MASSA -->
         <section id="view-quick" class="view-section">
             <div style="background:var(--bg-panel); border:1px solid var(--border-panel); padding:25px; border-radius:12px;">
                 <h3 style="margin-bottom:15px; text-transform:uppercase; color:var(--accent-red);">Matriz de Ajuste Rápido de Ativos</h3>
@@ -225,7 +214,6 @@
             </div>
         </section>
 
-        <!-- SINO-CABINES -->
         <section id="view-linha4" class="view-section">
             <div class="line-panel-container">
                 <div class="synoptic-card">
@@ -295,7 +283,6 @@
         </section>
     </main>
 
-    <!-- MODAL INDIVIDUAL -->
     <div class="modal-overlay" id="tank-modal">
         <div class="modal-card">
             <div class="modal-header" id="modal-tank-title">Ajustar Ativo</div>
@@ -316,64 +303,86 @@
         let currentView = 'qx';
         let isRegisteredMode = false;
         let globalTanksCached = [];
+        let syncInterval;
 
-        // PERSISTÊNCIA DE SESSÃO COM LOCALSTORAGE
+        // VALIDAÇÃO INICIAL DA SESSÃO SALVA
         window.onload = function() {
             const savedUser = localStorage.getItem('ihms_user');
             if (savedUser) {
                 const auth = JSON.parse(savedUser);
-                document.getElementById('login-screen').style.display = 'none';
-                let isUserAdmin = (auth.adm === true || auth.adm === "TRUE" || auth.adm === "true");
-                document.getElementById('user-display-tag').innerHTML = `Op: ${auth.name} ${isUserAdmin ? ' <span style="color:var(--accent-red); font-weight:bold;">[ADM]</span>' : ''}`;
-                
-                fetchDatabase();
-                setInterval(fetchDatabase, 5000);
+                iniciarSistema(auth);
             }
         };
+
+        // ENTRADA DIRETA NA INTERFACE INDUSTRIAL
+        function iniciarSistema(auth) {
+            document.getElementById('login-screen').style.display = 'none';
+            let isUserAdmin = (auth.adm === true || auth.adm === "TRUE" || auth.adm === "true");
+            document.getElementById('user-display-tag').innerHTML = `Op: ${auth.name} ${isUserAdmin ? ' <span style="color:var(--accent-red); font-weight:bold;">[ADM]</span>' : ''}`;
+            
+            fetchDatabase();
+            if(!syncInterval) syncInterval = setInterval(fetchDatabase, 5000);
+        }
 
         async function handleLoginAuth() {
             let br = document.getElementById('login-br').value;
             let senha = document.getElementById('login-senha').value;
+            let btn = document.getElementById('main-login-btn');
             
             if(!br || !senha) { alert("Preencha os campos obrigatórios!"); return; }
 
+            // FLUXO DO CADASTRO (PRIMEIRO ACESSO)
             if(isRegisteredMode) {
                 let nome = document.getElementById('login-nome').value;
                 let repetir = document.getElementById('login-repetir').value;
                 if(senha !== repetir) { alert("As senhas digitadas não conferem!"); return; }
                 
-                let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "register_user", br: br, nome: nome, senha: senha }) });
-                if(res.ok) {
-                    alert("Acesso cadastrado com sucesso! Efetue o login.");
-                    location.reload();
+                btn.innerText = "Sincronizando e Gravando Ativo...";
+                
+                try {
+                    let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "register_user", br: br, nome: nome, senha: senha }) });
+                    if(res.ok) {
+                        // Cadastro com sucesso na Planilha Google -> Conecta e pula direto pra fábrica
+                        let newAuth = { found: true, valid: true, name: nome, adm: false };
+                        localStorage.setItem('ihms_user', JSON.stringify(newAuth));
+                        iniciarSistema(newAuth);
+                    } else {
+                        throw new Error("Falha no servidor");
+                    }
+                } catch (error) {
+                    alert("Erro na gravação. Garanta que o Apps Script foi publicado como Nova Versão.");
+                    btn.innerText = "Confirmar Primeiro Acesso";
                 }
                 return;
             }
 
-            let response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "check_login", br: br, senha: senha }) });
-            let auth = await response.json();
+            // FLUXO DE LOGIN NORMAL (CONSULTA A BASE DA PLANILHA)
+            btn.innerText = "Consultando Banco de Dados...";
+            try {
+                let response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "check_login", br: br, senha: senha }) });
+                let auth = await response.json();
 
-            if(!auth.found) {
-                alert("Operador não localizado. Redirecionando para Cadastro de Primeiro Acesso.");
-                isRegisteredMode = true;
-                document.getElementById('login-flow-title').innerText = "Cadastro de Primeiro Acesso";
-                document.getElementById('block-nome').style.display = "flex";
-                document.getElementById('block-repetir').style.display = "flex";
-                document.getElementById('main-login-btn').innerText = "Confirmar Primeiro Acesso";
-            } else {
-                if(auth.valid) {
-                    // Salva credenciais validadas localmente no computador
-                    localStorage.setItem('ihms_user', JSON.stringify(auth));
-                    
-                    document.getElementById('login-screen').style.display = 'none';
-                    let isUserAdmin = (auth.adm === true || auth.adm === "TRUE" || auth.adm === "true");
-                    document.getElementById('user-display-tag').innerHTML = `Op: ${auth.name} ${isUserAdmin ? ' <span style="color:var(--accent-red); font-weight:bold;">[ADM]</span>' : ''}`;
-                    
-                    fetchDatabase();
-                    setInterval(fetchDatabase, 5000);
+                if(!auth.found) {
+                    // BR NÃO EXISTE -> Redireciona o fluxo para o formulário de cadastro na mesma tela
+                    isRegisteredMode = true;
+                    document.getElementById('login-flow-title').innerText = "Cadastro de Primeiro Acesso";
+                    document.getElementById('block-nome').style.display = "flex";
+                    document.getElementById('block-repetir').style.display = "flex";
+                    btn.innerText = "Confirmar Primeiro Acesso";
                 } else {
-                    alert("Senha incorreta para este registro (BR)!");
+                    if(auth.valid) {
+                        // Credenciais corretas -> Salva sessão e entra na fábrica
+                        localStorage.setItem('ihms_user', JSON.stringify(auth));
+                        iniciarSistema(auth);
+                    } else {
+                        alert("Senha incorreta para este registro (BR)!");
+                        btn.innerText = "Autenticar Sistema";
+                    }
                 }
+            } catch (err) {
+                console.error(err);
+                alert("Erro crítico de comunicação com a API Google.");
+                btn.innerText = "Autenticar Sistema";
             }
         }
 
@@ -381,7 +390,7 @@
             try {
                 let response = await fetch(API_URL);
                 let json = await response.json();
-                globalTanksCached = json.tanks; // Ajustado para json.tanks
+                globalTanksCached = json.tanks;
                 updateUI(json.tanks, json.linhas);
             } catch (err) { console.error("Erro na comunicação em nuvem:", err); }
         }
@@ -410,7 +419,7 @@
             }
         }
 
-        // LÓGICA DE CORES EXATA PEDIDA POR VOCÊ
+        // REGRAS OPERACIONAIS DAS FAIXAS DE CORES
         function getLiquidColorByPercent(percent) {
             if (percent > 75) return 'liquid-red';
             if (percent >= 45) return 'liquid-green';
