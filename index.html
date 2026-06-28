@@ -75,6 +75,8 @@
         .sync-dot.syncing { background: var(--accent-orange); animation: pulse-sync 1s infinite; }
         .sync-dot.offline { background: var(--accent-red); }
         @keyframes pulse-sync { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+        .nav-btn.tv-on { color: var(--accent-green); border-left: 3px solid var(--accent-green); background: rgba(0,204,102,0.06); }
+        body.tv-mode .sync-indicator { border-color: var(--accent-green); }
         .refresh-btn { background: #0a0a0a; border: 1px solid var(--border-panel); color: var(--text-muted); width: 34px; height: 34px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
         .refresh-btn:hover { color: var(--accent-green); border-color: var(--accent-green); }
         .refresh-btn:active { transform: rotate(180deg); }
@@ -268,6 +270,7 @@
             
             <div id="admin-divider" style="display:none; color: var(--accent-red); font-size: 10px; padding: 20px 20px 5px; text-transform: uppercase; font-family: 'Azeret Mono', monospace;">Controle ADM</div>
             <button class="nav-btn" onclick="switchView('config')" id="btn-config" style="display:none;"><i class="fa-solid fa-users-cog"></i> Configurações</button>
+            <button class="nav-btn" id="btn-tv" onclick="toggleTvMode()"><i class="fa-solid fa-tv"></i> <span id="tv-label">Modo TV</span></button>
 
             <div style="flex:1;"></div>
             <button class="nav-btn" id="btn-logout" style="display:none; color:var(--accent-red); margin-top:auto;" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
@@ -504,6 +507,58 @@
         }
 
         const SESSAO_VALIDADE_MS = 12 * 60 * 60 * 1000; // 12 horas
+        const TV_RELOAD_MS = 60 * 60 * 1000;            // recarrega de hora em hora em modo TV
+
+        function isTvMode() {
+            return localStorage.getItem('ihms_tvmode') === '1';
+        }
+        function setTvMode(on) {
+            if(on) localStorage.setItem('ihms_tvmode', '1');
+            else localStorage.removeItem('ihms_tvmode');
+        }
+
+        function toggleTvMode() {
+            const ligando = !isTvMode();
+            if(ligando) {
+                if(!confirm('Ativar Modo TV?\n\nA tela ficará sempre ativa (sessão sem expiração) e o aplicativo recarregará automaticamente de hora em hora.\n\nUse apenas em telas de monitoramento dedicadas.')) return;
+                setTvMode(true);
+                document.body.classList.add('tv-mode');
+                aplicarTvUI();
+                iniciarReloadTv();
+                toast('Modo TV ativado — sessão permanente', 'ok');
+            } else {
+                if(!confirm('Desativar Modo TV?\n\nA sessão voltará a expirar em 12h.')) return;
+                setTvMode(false);
+                document.body.classList.remove('tv-mode');
+                aplicarTvUI();
+                pararReloadTv();
+                toast('Modo TV desativado', 'ok');
+            }
+        }
+
+        function aplicarTvUI() {
+            const label = document.getElementById('tv-label');
+            const btn = document.getElementById('btn-tv');
+            if(isTvMode()) {
+                if(label) label.innerHTML = 'Modo TV <span style="color:var(--accent-green);">●</span>';
+                if(btn) btn.classList.add('tv-on');
+            } else {
+                if(label) label.textContent = 'Modo TV';
+                if(btn) btn.classList.remove('tv-on');
+            }
+        }
+
+        let reloadTvTimer = null;
+        function iniciarReloadTv() {
+            pararReloadTv();
+            reloadTvTimer = setTimeout(() => {
+                console.log('[Modo TV] Recarregando aplicação...');
+                location.reload();
+            }, TV_RELOAD_MS);
+        }
+        function pararReloadTv() {
+            if(reloadTvTimer) { clearTimeout(reloadTvTimer); reloadTvTimer = null; }
+        }
 
         function salvarSessao(auth) {
             const data = { ...auth, _criadaEm: Date.now() };
@@ -515,7 +570,8 @@
             if(!raw) return null;
             try {
                 const data = JSON.parse(raw);
-                if(data._criadaEm && (Date.now() - data._criadaEm) > SESSAO_VALIDADE_MS) {
+                // Em Modo TV, sessão nunca expira
+                if(!isTvMode() && data._criadaEm && (Date.now() - data._criadaEm) > SESSAO_VALIDADE_MS) {
                     localStorage.removeItem('ihms_user');
                     return null;
                 }
@@ -527,16 +583,21 @@
         }
 
         window.onload = function() {
+            // Aplica estado do Modo TV antes de tudo
+            if(isTvMode()) {
+                document.body.classList.add('tv-mode');
+                iniciarReloadTv();
+            }
+            aplicarTvUI();
+
             const auth = carregarSessao();
             if (auth) {
                 iniciarSistema(auth);
-                // Restaura última view aberta
                 const ultimaView = sessionStorage.getItem('ihms_view');
                 if(ultimaView) {
                     setTimeout(() => switchView(ultimaView), 50);
                 }
             }
-            // ESC fecha modais
             document.addEventListener('keydown', (e) => {
                 if(e.key === 'Escape') {
                     const overlay = document.getElementById('edit-side-panel-overlay');
