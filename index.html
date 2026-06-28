@@ -145,6 +145,9 @@
         .quick-table th { background: #0a0a0a; color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-family: 'Azeret Mono', monospace; }
         .quick-table td { background: var(--bg-panel); }
         .quick-input { background: #000; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 4px; width: 100%; font-family: 'Azeret Mono', monospace; }
+        select.quick-input { cursor: pointer; }
+        select.quick-input optgroup { background:#0a0a0a; color:var(--accent-red); font-weight:bold; }
+        select.quick-input option { background:#111; color:#fff; padding:6px; }
 
         /* CONFIGURAÇÕES GESTÃO ADM */
         .admin-action-btn { padding: 6px 12px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; transition: 0.2s; }
@@ -385,7 +388,9 @@
                 </select>
             </div>
             <div class="panel-row"><label>Volume Atual (L)</label><input type="number" id="panel-tank-vol" class="industrial-input"></div>
-            <div class="panel-row"><label>Produto Ativo</label><input type="text" id="panel-tank-prod" class="industrial-input"></div>
+            <div class="panel-row"><label>Produto Ativo</label>
+                <select id="panel-tank-prod" class="industrial-select" style="background:#111; color:#fff; padding:10px; border-radius:6px; border:1px solid #333; outline:none; width:100%; text-align:left;"></select>
+            </div>
             <div class="panel-row"><label>Número do Batch</label><input type="text" id="panel-tank-batch" class="industrial-input"></div>
             
             <div class="panel-actions">
@@ -427,6 +432,64 @@
         let syncInterval = null;
         let isSyncing = false;
         let userIsTyping = false;
+
+        const PRODUTOS_LISTA = [
+            { categoria: "Refrigerantes", nome: "Coca  Cola Menos Açúcar IBC", codigo: "CC/B-1.00", sap: "30113011" },
+            { categoria: "Refrigerantes", nome: "Coca Coca Zero", codigo: "DS-2110.88", sap: "" },
+            { categoria: "Refrigerantes", nome: "Coca Cola Orginal 1758107", codigo: "", sap: "" },
+            { categoria: "Refrigerantes", nome: "Coca Cola Orginal 1770799", codigo: "", sap: "" },
+            { categoria: "Refrigerantes", nome: "Fanta Guaraná", codigo: "GU/B71.00", sap: "30115239" },
+            { categoria: "Refrigerantes", nome: "Fanta Laranja", codigo: "OR-1982.00", sap: "30118341" },
+            { categoria: "Refrigerantes", nome: "Fanta Maracujá", codigo: "PF-113.00", sap: "30118738" },
+            { categoria: "Refrigerantes", nome: "Fanta Uva", codigo: "GR/B-385.00", sap: "30118984" },
+            { categoria: "Refrigerantes", nome: "Guaraná Kuat", codigo: "GU/B73.00", sap: "30118344" },
+            { categoria: "Refrigerantes", nome: "Sprite Fresh", codigo: "SP/D-1570.50", sap: "30118343" },
+            { categoria: "Refrigerantes", nome: "Sprite Original", codigo: "SP - 1565.01", sap: "30116161" },
+            { categoria: "Refrigerantes", nome: "Sprite Sem Açúcar", codigo: "SP/D - 0215.50", sap: "30116451" },
+            { categoria: "Kapo", nome: "Kapo Abacaxi", codigo: "PA/V-1567.00", sap: "30116587" },
+            { categoria: "Kapo", nome: "Kapo Citrus", codigo: "CI/V-0220.00", sap: "30116588" },
+            { categoria: "Kapo", nome: "Kapo Laranja", codigo: "OR/V-1924.00", sap: "30116589" },
+            { categoria: "Kapo", nome: "Kapo Maracujá", codigo: "PF/V-0117.00", sap: "30116590" },
+            { categoria: "Kapo", nome: "Kapo Maçã", codigo: "AP/V-0802.20", sap: "30116932" },
+            { categoria: "Kapo", nome: "Kapo Melancia", codigo: "ME/V-0108.00", sap: "30118667" },
+            { categoria: "Kapo", nome: "Kapo Morango", codigo: "ST-323.00", sap: "30117022" },
+            { categoria: "Kapo", nome: "Kapo Uva", codigo: "GR-0274.30", sap: "30117023" },
+            { categoria: "Crystal Sparkling", nome: "Sparkling Crystal Limão", codigo: "WA/LI/M-12.00", sap: "30107455" },
+            { categoria: "Crystal Sparkling", nome: "Sparkling Frutas Vermelhas", codigo: "WA/BK/M-3.00", sap: "30107454" },
+            { categoria: "Crystal Sparkling", nome: "Sparkling Melancia", codigo: "WA/ME/M-5.00", sap: "30115475" },
+            { categoria: "Crystal Sparkling", nome: "Sparkling Tang Cap. Limão", codigo: "WA/MA/M-2.00", sap: "30112716" },
+            { categoria: "Sucos", nome: "Maracujá", codigo: "", sap: "301121513" },
+            { categoria: "Sucos", nome: "Suco base Kapo", codigo: "", sap: "30101061" },
+            { categoria: "Sucos", nome: "Suco de Laranja", codigo: "", sap: "30102501" },
+            { categoria: "Sucos", nome: "Suco de Limão", codigo: "", sap: "30100634" },
+            { categoria: "Sucos", nome: "Suco de Maçã", codigo: "", sap: "30102818" },
+            { categoria: "Sucos", nome: "Suco de Morango", codigo: "", sap: "30101063" },
+            { categoria: "Sucos", nome: "Suco de Uva", codigo: "", sap: "30101054" }
+        ];
+
+        // Renderiza <option>s do dropdown a partir de PRODUTOS_LISTA, agrupados por categoria
+        function renderOpcoesProduto(valorSelecionado) {
+            const cats = {};
+            PRODUTOS_LISTA.forEach(p => {
+                if(!cats[p.categoria]) cats[p.categoria] = [];
+                cats[p.categoria].push(p);
+            });
+            let html = '<option value="">— Sem produto / OFF —</option>';
+            Object.keys(cats).forEach(c => {
+                html += `<optgroup label="${escapeHtml(c)}">`;
+                cats[c].forEach(p => {
+                    const label = p.sap ? `${p.nome} (SAP ${p.sap})` : p.nome;
+                    const sel = (valorSelecionado && valorSelecionado === p.nome) ? ' selected' : '';
+                    html += `<option value="${escapeHtml(p.nome)}" data-sap="${escapeHtml(p.sap)}" data-codigo="${escapeHtml(p.codigo)}"${sel}>${escapeHtml(label)}</option>`;
+                });
+                html += '</optgroup>';
+            });
+            // Se o valorSelecionado existe mas não está na lista (produto legado), adiciona ao final
+            if(valorSelecionado && !PRODUTOS_LISTA.find(p => p.nome === valorSelecionado)) {
+                html += `<optgroup label="Legado"><option value="${escapeHtml(valorSelecionado)}" selected>${escapeHtml(valorSelecionado)}</option></optgroup>`;
+            }
+            return html;
+        }
 
         window.onload = function() {
             const savedUser = localStorage.getItem('ihms_user');
@@ -666,9 +729,8 @@
         function renderQuickFillTable(tanks) {
             const tbody = document.getElementById('quick-fill-tbody');
             if(!tbody) return;
-            // Só pula re-render se o foco está em um input DESTA tabela
             const active = document.activeElement;
-            if(tbody.contains(active) && active.tagName === 'INPUT') return;
+            if(tbody.contains(active) && (active.tagName === 'INPUT' || active.tagName === 'SELECT')) return;
             tbody.innerHTML = '';
             tanks.forEach(tank => {
                 const tr = document.createElement('tr');
@@ -676,7 +738,7 @@
                 tr.innerHTML = `
                     <td style="font-family:'Azeret Mono', monospace; font-weight:bold; color:var(--accent-red);">TQ-${escapeHtml(tank.id)}</td>
                     <td><input type="number" class="quick-input q-vol" value="${Number(tank.vol)||0}" min="0"></td>
-                    <td><input type="text" class="quick-input q-prod" value="${escapeHtml(cleanStr(tank.prod))}" maxlength="60"></td>
+                    <td><select class="quick-input q-prod">${renderOpcoesProduto(cleanStr(tank.prod))}</select></td>
                     <td><input type="text" class="quick-input q-batch" value="${escapeHtml(cleanStr(tank.batch))}" maxlength="40"></td>
                 `;
                 tbody.appendChild(tr);
@@ -816,13 +878,16 @@
         function openEditPanel(id, vol, prod, batch, status) {
             const overlay = document.getElementById('edit-side-panel-overlay');
             const panel = document.getElementById('edit-side-panel');
-            
+
             document.getElementById('panel-tank-title').innerText = `Ajustar TQ-${id}`;
             document.getElementById('panel-tank-id').value = id;
             document.getElementById('panel-tank-vol').value = vol;
-            document.getElementById('panel-tank-prod').value = prod;
             document.getElementById('panel-tank-batch').value = batch;
-            
+
+            // Popula dropdown de produto preservando valor atual
+            const sel = document.getElementById('panel-tank-prod');
+            sel.innerHTML = renderOpcoesProduto(prod);
+
             let statusSelect = document.getElementById('panel-tank-status');
             statusSelect.value = (status === 'CIP ATIVO') ? 'CIP ATIVO' : 'PRODUÇÃO';
 
