@@ -200,17 +200,194 @@
         .machine-block-layout { display: flex; align-items: center; justify-content: center; position: relative; background: #050505; border-radius: 8px; height: 380px; overflow: hidden; }
         .conveyor-belt { position: absolute; width: 100%; height: 12px; background: #262626; bottom: 40px; left: 0; z-index: 1; border-top: 2px solid #404040; }
         
-        .large-filler-module { width: 380px; height: 340px; background: linear-gradient(145deg, #222 0%, #111 50%, #1a1a1a 100%); border: 2px solid #444; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; border-left: 20px solid rgba(255, 255, 255, 0.03); border-right: 20px solid rgba(255, 255, 255, 0.03); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .large-filler-module::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 25px; background: linear-gradient(90deg, #444, #666, #444); border-bottom: 2px solid #222; z-index: 5; }
-        .large-filler-module::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 25px; background: linear-gradient(90deg, #333, #555, #333); border-top: 2px solid #111; z-index: 5; }
+        /* ============== ENCHEDORAS INDUSTRIAIS ============== */
+        .large-filler-module {
+            width: 420px; height: 360px;
+            background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 30%, #141414 70%, #0e0e0e 100%);
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 2;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                inset 4px 0 0 rgba(0,0,0,0.4),
+                inset -4px 0 0 rgba(0,0,0,0.4),
+                0 12px 35px rgba(0,0,0,0.85);
+        }
+        /* Tampa superior com nervuras e parafusos */
+        .large-filler-module::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 36px;
+            background:
+                linear-gradient(180deg, #555 0%, #3a3a3a 50%, #2a2a2a 100%);
+            border-bottom: 2px solid #1a1a1a;
+            border-radius: 5px 5px 0 0;
+            z-index: 5;
+            box-shadow: inset 0 -2px 4px rgba(0,0,0,0.5);
+        }
+        /* Tampa inferior */
+        .large-filler-module::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 28px;
+            background: linear-gradient(180deg, #2a2a2a 0%, #1f1f1f 50%, #161616 100%);
+            border-top: 2px solid #0a0a0a;
+            border-radius: 0 0 5px 5px;
+            z-index: 5;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+        }
 
-        .pet-carousel { width: 240px; height: 240px; border: 3px dashed #555; border-radius: 50%; position: relative; animation: spin 15s linear infinite; }
-        .pet-bottle { position: absolute; top: 50%; left: 50%; font-size: 28px; color: var(--accent-red); transform: translate(-50%, -50%) rotate(calc(36deg * var(--i))) translateY(-105px); }
-        
-        .kapo-carousel { width: 140px; height: 260px; background: rgba(0,0,0,0.5); border-left: 2px dashed #444; border-right: 2px dashed #444; position: relative; overflow: hidden; }
-        .kapo-pouch { position: absolute; width: 32px; height: 48px; background: linear-gradient(180deg, #aaa 15%, var(--accent-purple) 15%); border-radius: 3px 3px 6px 6px; left: 50%; transform: translateX(-50%); animation: vertical-drop 4s linear infinite; top: -60px; box-shadow: inset 0 -5px 10px rgba(0,0,0,0.4), 0 5px 10px rgba(0,0,0,0.5); }
-        .kapo-pouch::after { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: #fff; border-radius: 50%; opacity: 0.8; }
-        @keyframes vertical-drop { 0% { top: -60px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 260px; opacity: 0; } }
+        /* Painel/display da máquina (sobreposto na tampa superior) */
+        .machine-display {
+            position: absolute; top: 8px; left: 16px;
+            display: flex; align-items: center; gap: 10px;
+            z-index: 6;
+        }
+        .machine-display .led-bank {
+            display: flex; gap: 4px;
+            background: #0a0a0a; padding: 4px 6px; border-radius: 3px;
+            border: 1px solid #1a1a1a;
+        }
+        .machine-display .led {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #2a2a2a; box-shadow: inset 0 0 2px rgba(0,0,0,0.7);
+        }
+        .machine-display .led.on-green { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+        .machine-display .led.on-red { background: var(--accent-red); box-shadow: 0 0 6px var(--accent-red); }
+        .machine-display .led.on-orange { background: var(--accent-orange); box-shadow: 0 0 6px var(--accent-orange); }
+        .machine-display .lcd {
+            background: #0d1f0d; color: #5fff8c;
+            font-family: 'Azeret Mono', monospace; font-size: 10px; font-weight: bold;
+            padding: 3px 8px; border-radius: 2px;
+            border: 1px solid #1a1a1a;
+            box-shadow: inset 0 0 5px rgba(0,255,100,0.2);
+            letter-spacing: 1px;
+        }
+
+        /* Etiqueta lateral com o nome da máquina */
+        .machine-label {
+            position: absolute; bottom: 6px; right: 16px;
+            font-family: 'Azeret Mono', monospace; font-size: 10px;
+            color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase;
+            z-index: 6;
+        }
+        .machine-label::before {
+            content: '●'; color: var(--accent-red); margin-right: 6px; font-size: 12px;
+        }
+
+        /* Parafusos decorativos nos cantos */
+        .machine-bolts {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; z-index: 6;
+        }
+        .machine-bolts::before, .machine-bolts::after,
+        .machine-bolts > span::before, .machine-bolts > span::after {
+            content: ''; position: absolute;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #999, #555, #2a2a2a);
+            border: 0.5px solid #1a1a1a;
+        }
+        .machine-bolts::before { top: 10px; right: 12px; }
+        .machine-bolts::after { bottom: 10px; right: 12px; }
+        .machine-bolts > span { position: absolute; inset: 0; }
+        .machine-bolts > span::before { top: 10px; left: 12px; }
+        .machine-bolts > span::after { bottom: 10px; left: 12px; }
+
+        /* PET CAROUSEL (giratório de garrafas) */
+        .pet-carousel {
+            width: 260px; height: 260px;
+            border-radius: 50%;
+            position: relative;
+            background:
+                radial-gradient(circle at center, transparent 38%, rgba(255,255,255,0.02) 38.5%, rgba(255,255,255,0.02) 42%, transparent 42.5%),
+                radial-gradient(circle at center, transparent 50%, rgba(255,255,255,0.03) 50.5%, rgba(255,255,255,0.03) 52%, transparent 52.5%),
+                radial-gradient(circle at center, #1a1a1a, #0a0a0a 70%);
+            border: 2px solid #2a2a2a;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            animation: spin 12s linear infinite;
+        }
+        /* círculo central (hub) */
+        .pet-carousel::before {
+            content: '';
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 60px; height: 60px;
+            background: radial-gradient(circle at 35% 35%, #555, #2a2a2a, #1a1a1a);
+            border-radius: 50%;
+            border: 2px solid #1a1a1a;
+            box-shadow:
+                inset 0 0 10px rgba(0,0,0,0.6),
+                0 0 0 4px rgba(0,0,0,0.3),
+                0 0 0 5px #333;
+        }
+        .pet-carousel::after {
+            content: '';
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 18px; height: 18px;
+            background: radial-gradient(circle, #888, #444);
+            border-radius: 50%;
+            border: 1px solid #111;
+        }
+        /* Bicos enchedores ao redor (substitui as garrafas FA) */
+        .pet-bottle {
+            position: absolute; top: 50%; left: 50%;
+            width: 14px; height: 38px;
+            background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 25%, var(--accent-red) 25%, var(--accent-red) 90%, #1a1a1a 90%);
+            border-radius: 4px 4px 6px 6px;
+            transform: translate(-50%, -50%) rotate(calc(36deg * var(--i))) translateY(-110px);
+            transform-origin: center;
+            border: 1px solid rgba(0,0,0,0.5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .pet-bottle::before {
+            content: ''; position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+            width: 6px; height: 4px; background: #666; border-radius: 1px 1px 0 0;
+        }
+
+        /* KAPO CAROUSEL (sachês caindo verticalmente) */
+        .kapo-carousel {
+            width: 160px; height: 280px;
+            position: relative; overflow: hidden;
+            background:
+                linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.02) 50%, transparent 100%),
+                #0a0a0a;
+            border-left: 1px solid #2a2a2a; border-right: 1px solid #2a2a2a;
+        }
+        /* trilhos verticais laterais */
+        .kapo-carousel::before, .kapo-carousel::after {
+            content: ''; position: absolute; top: 0; bottom: 0;
+            width: 3px; background: linear-gradient(180deg, #3a3a3a, #1a1a1a, #3a3a3a);
+            border-radius: 2px;
+        }
+        .kapo-carousel::before { left: 15px; }
+        .kapo-carousel::after { right: 15px; }
+
+        .kapo-pouch {
+            position: absolute; width: 38px; height: 54px;
+            background:
+                linear-gradient(180deg, #c0c0c0 0%, #999 18%, var(--accent-purple) 18%, #6a1cb8 100%);
+            border-radius: 3px 3px 8px 8px;
+            left: 50%; transform: translateX(-50%);
+            top: -60px;
+            box-shadow:
+                inset -3px -3px 8px rgba(0,0,0,0.4),
+                inset 3px 3px 5px rgba(255,255,255,0.08),
+                0 4px 10px rgba(0,0,0,0.6);
+            animation: vertical-drop 4s linear infinite;
+        }
+        .kapo-pouch::after {
+            content: ''; position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+            width: 8px; height: 8px; background: #fff; border-radius: 50%; opacity: 0.85;
+            box-shadow: 0 0 4px rgba(255,255,255,0.4);
+        }
+        .kapo-pouch::before {
+            content: ''; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            width: 28px; height: 2px; background: rgba(0,0,0,0.3); border-radius: 1px;
+        }
+        @keyframes vertical-drop {
+            0% { top: -60px; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 280px; opacity: 0; }
+        }
 
         /* CHUVEIRO SPRAY BALL (GOTAS SUAVES) */
         .cip-spray-system { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; flex-direction: column; align-items: center; }
@@ -406,7 +583,16 @@
                     <div class="machine-block-layout">
                         <div class="conveyor-belt"></div>
                         <div class="large-filler-module">
-                            <div class="pet-carousel">
+                            <div class="machine-display">
+                                <div class="led-bank">
+                                    <div class="led on-green"></div><div class="led on-green"></div><div class="led"></div>
+                                    <div class="led on-orange"></div><div class="led"></div>
+                                </div>
+                                <div class="lcd">LINHA 4 · ON</div>
+                            </div>
+                            <div class="machine-bolts"><span></span></div>
+                            <div class="machine-label">PET FILLER</div>
+                                                        <div class="pet-carousel">
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
                             </div>
                             <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
@@ -424,7 +610,16 @@
                     <div class="machine-block-layout">
                         <div class="conveyor-belt"></div>
                         <div class="large-filler-module">
-                            <div class="kapo-carousel">
+                            <div class="machine-display">
+                                <div class="led-bank">
+                                    <div class="led on-green"></div><div class="led on-green"></div><div class="led on-orange"></div>
+                                    <div class="led"></div><div class="led"></div>
+                                </div>
+                                <div class="lcd">KAPO · POUCH</div>
+                            </div>
+                            <div class="machine-bolts"><span></span></div>
+                            <div class="machine-label">KAPO FILLER</div>
+                                                        <div class="kapo-carousel">
                                 <div class="kapo-pouch" style="animation-delay: 0s;"></div><div class="kapo-pouch" style="animation-delay: 1s;"></div><div class="kapo-pouch" style="animation-delay: 2s;"></div><div class="kapo-pouch" style="animation-delay: 3s;"></div><div class="kapo-pouch" style="animation-delay: 4s;"></div>
                             </div>
                             <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
@@ -442,7 +637,16 @@
                     <div class="machine-block-layout">
                         <div class="conveyor-belt"></div>
                         <div class="large-filler-module">
-                            <div class="pet-carousel">
+                            <div class="machine-display">
+                                <div class="led-bank">
+                                    <div class="led on-green"></div><div class="led on-green"></div><div class="led"></div>
+                                    <div class="led on-orange"></div><div class="led"></div>
+                                </div>
+                                <div class="lcd">LINHA 6 · ON</div>
+                            </div>
+                            <div class="machine-bolts"><span></span></div>
+                            <div class="machine-label">PET FILLER</div>
+                                                        <div class="pet-carousel">
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
                             </div>
                             <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
@@ -460,7 +664,16 @@
                     <div class="machine-block-layout">
                         <div class="conveyor-belt"></div>
                         <div class="large-filler-module">
-                            <div class="pet-carousel">
+                            <div class="machine-display">
+                                <div class="led-bank">
+                                    <div class="led on-green"></div><div class="led on-green"></div><div class="led"></div>
+                                    <div class="led on-orange"></div><div class="led"></div>
+                                </div>
+                                <div class="lcd">LINHA 7 · ON</div>
+                            </div>
+                            <div class="machine-bolts"><span></span></div>
+                            <div class="machine-label">PET FILLER</div>
+                                                        <div class="pet-carousel">
                                 <i class="fa-solid fa-bottle-water pet-bottle" style="--i:1;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:2;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:3;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:4;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:5;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:6;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:7;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:8;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:9;"></i><i class="fa-solid fa-bottle-water pet-bottle" style="--i:10;"></i>
                             </div>
                             <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
@@ -1043,10 +1256,23 @@
                   <rect x="${TANK_X+15}" y="${TANK_BOTTOM}" width="10" height="14" fill="#333"/>
                   <rect x="${TANK_X+TANK_W-25}" y="${TANK_BOTTOM}" width="10" height="14" fill="#333"/>
 
-                  <!-- Válvula lateral -->
-                  <circle cx="${TANK_X-3}" cy="${TANK_BOTTOM-25}" r="6" fill="none" stroke="#666" stroke-width="1.5"/>
-                  <line x1="${TANK_X-9}" y1="${TANK_BOTTOM-25}" x2="${TANK_X+3}" y2="${TANK_BOTTOM-25}" stroke="#666" stroke-width="1.5"/>
-                  <line x1="${TANK_X-3}" y1="${TANK_BOTTOM-31}" x2="${TANK_X-3}" y2="${TANK_BOTTOM-19}" stroke="#666" stroke-width="1.5"/>
+                  <!-- Escotilha de inspeção lateral (porta de manhole) -->
+                  <g transform="translate(${TANK_X+22} ${TANK_BOTTOM-60})">
+                    <!-- flange externo -->
+                    <circle cx="0" cy="0" r="14" fill="#3a3a3a" stroke="#2a2a2a" stroke-width="0.8"/>
+                    <!-- parafusos ao redor -->
+                    ${[0,45,90,135,180,225,270,315].map(a => {
+                      const rad = a * Math.PI / 180;
+                      const px = Math.cos(rad) * 11;
+                      const py = Math.sin(rad) * 11;
+                      return `<circle cx="${px.toFixed(2)}" cy="${py.toFixed(2)}" r="1.3" fill="#1a1a1a" stroke="#5a5a5a" stroke-width="0.3"/>`;
+                    }).join('')}
+                    <!-- vidro/porta -->
+                    <circle cx="0" cy="0" r="8" fill="#0a0a0a" stroke="#555" stroke-width="0.6"/>
+                    <!-- reflexo no vidro -->
+                    <ellipse cx="-2.5" cy="-2.5" rx="2.2" ry="3" fill="#fff" opacity="0.15"/>
+                    <ellipse cx="1.5" cy="2" rx="1" ry="1.5" fill="#fff" opacity="0.08"/>
+                  </g>
                 </svg>`;
 
                 const card = document.createElement('div');
