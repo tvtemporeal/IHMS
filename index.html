@@ -68,6 +68,17 @@
         .view-title { font-size: 22px; font-weight: 700; display: flex; align-items: center; }
         .plant-tag { font-family: 'Azeret Mono', monospace; font-size: 12px; color: var(--text-muted); border: 1px solid var(--border-panel); padding: 6px 12px; border-radius: 4px; background: #0a0a0a; }
         .plant-tag span { color: var(--accent-red); font-weight: 700; }
+        .header-right { display: flex; align-items: center; gap: 14px; }
+        .sync-indicator { display: flex; align-items: center; gap: 8px; font-family: 'Azeret Mono', monospace; font-size: 11px; color: var(--text-muted); padding: 6px 12px; border: 1px solid var(--border-panel); border-radius: 4px; background: #0a0a0a; }
+        .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: background 0.3s; }
+        .sync-dot.online { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+        .sync-dot.syncing { background: var(--accent-orange); animation: pulse-sync 1s infinite; }
+        .sync-dot.offline { background: var(--accent-red); }
+        @keyframes pulse-sync { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+        .refresh-btn { background: #0a0a0a; border: 1px solid var(--border-panel); color: var(--text-muted); width: 34px; height: 34px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        .refresh-btn:hover { color: var(--accent-green); border-color: var(--accent-green); }
+        .refresh-btn:active { transform: rotate(180deg); }
+        .refresh-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .view-section { display: none; padding: 40px; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .view-section.active { display: block; }
@@ -191,7 +202,8 @@
             .main-content { overflow-y: visible; width: 100%; }
             .top-header { flex-direction: row; justify-content: flex-start; text-align: left; padding: 20px; }
             .view-title { font-size: 18px; margin: 0; }
-            .plant-tag { display: none; }
+            .plant-tag, .sync-indicator { display: none; }
+            .header-right { gap: 8px; }
             .view-section { padding: 20px; }
             .tank-grid { grid-template-columns: 1fr; }
             
@@ -266,7 +278,14 @@
         <header class="top-header">
             <button id="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
             <h2 class="view-title" id="header-title">Módulo Quase-Xarope (TQs 510-517)</h2>
-            <div class="plant-tag">PLANTA: <span>COCA-COLA FEMSA - MARINGÁ</span></div>
+            <div class="header-right">
+                <div class="sync-indicator" id="sync-indicator" title="Status de sincronização">
+                    <div class="sync-dot" id="sync-dot"></div>
+                    <span id="sync-text">Conectando...</span>
+                </div>
+                <button class="refresh-btn" id="btn-refresh" title="Atualizar agora" onclick="fetchDatabase()"><i class="fa-solid fa-arrows-rotate"></i></button>
+                <div class="plant-tag">PLANTA: <span>COCA-COLA FEMSA - MARINGÁ</span></div>
+            </div>
         </header>
 
         <section id="view-qx" class="view-section active"><div class="tank-grid" id="grid-qx"></div></section>
@@ -484,12 +503,46 @@
             return html;
         }
 
-        window.onload = function() {
-            const savedUser = localStorage.getItem('ihms_user');
-            if (savedUser) {
-                const auth = JSON.parse(savedUser);
-                iniciarSistema(auth);
+        const SESSAO_VALIDADE_MS = 12 * 60 * 60 * 1000; // 12 horas
+
+        function salvarSessao(auth) {
+            const data = { ...auth, _criadaEm: Date.now() };
+            localStorage.setItem('ihms_user', JSON.stringify(data));
+        }
+
+        function carregarSessao() {
+            const raw = localStorage.getItem('ihms_user');
+            if(!raw) return null;
+            try {
+                const data = JSON.parse(raw);
+                if(data._criadaEm && (Date.now() - data._criadaEm) > SESSAO_VALIDADE_MS) {
+                    localStorage.removeItem('ihms_user');
+                    return null;
+                }
+                return data;
+            } catch(e) {
+                localStorage.removeItem('ihms_user');
+                return null;
             }
+        }
+
+        window.onload = function() {
+            const auth = carregarSessao();
+            if (auth) {
+                iniciarSistema(auth);
+                // Restaura última view aberta
+                const ultimaView = sessionStorage.getItem('ihms_view');
+                if(ultimaView) {
+                    setTimeout(() => switchView(ultimaView), 50);
+                }
+            }
+            // ESC fecha modais
+            document.addEventListener('keydown', (e) => {
+                if(e.key === 'Escape') {
+                    const overlay = document.getElementById('edit-side-panel-overlay');
+                    if(overlay && overlay.classList.contains('active')) closeEditPanel();
+                }
+            });
         };
 
         function iniciarSistema(auth) {
@@ -556,7 +609,7 @@
                     let data = await res.json().catch(() => ({}));
                     if(res.ok && data.success !== false) {
                         let newAuth = { found: true, valid: true, name: nome, adm: !!data.adm, br: br };
-                        localStorage.setItem('ihms_user', JSON.stringify(newAuth));
+                        salvarSessao(newAuth);
                         iniciarSistema(newAuth);
                     } else {
                         toast(data.erro || "Erro ao cadastrar (verifique o backend)", "erro");
@@ -586,7 +639,7 @@
                     btn.innerText = "Confirmar Primeiro Acesso";
                 } else if(auth.valid) {
                     auth.br = br;
-                    localStorage.setItem('ihms_user', JSON.stringify(auth));
+                    salvarSessao(auth);
                     iniciarSistema(auth);
                 } else {
                     toast("Senha incorreta", "erro");
@@ -600,11 +653,43 @@
             }
         }
 
+        let lastSyncOk = null;
+
+        function setSyncStatus(state) {
+            const dot = document.getElementById('sync-dot');
+            const txt = document.getElementById('sync-text');
+            if(!dot || !txt) return;
+            dot.className = 'sync-dot ' + state;
+            if(state === 'syncing') txt.textContent = 'Sincronizando...';
+            else if(state === 'online') {
+                lastSyncOk = Date.now();
+                txt.textContent = 'Online';
+            } else if(state === 'offline') {
+                txt.textContent = 'Offline';
+            }
+        }
+
+        // Atualiza texto "Online há Xs" a cada segundo
+        setInterval(() => {
+            if(!lastSyncOk) return;
+            const dot = document.getElementById('sync-dot');
+            if(dot && !dot.classList.contains('online')) return;
+            const txt = document.getElementById('sync-text');
+            if(!txt) return;
+            const secs = Math.floor((Date.now() - lastSyncOk) / 1000);
+            if(secs < 5) txt.textContent = 'Online';
+            else if(secs < 60) txt.textContent = `Atualizado há ${secs}s`;
+            else txt.textContent = `Atualizado há ${Math.floor(secs/60)}min`;
+        }, 1000);
+
         const cleanStr = (val) => (val && val !== 'undefined') ? val : '';
 
         async function fetchDatabase() {
             if(isSyncing) return;
             isSyncing = true;
+            setSyncStatus('syncing');
+            const btn = document.getElementById('btn-refresh');
+            if(btn) btn.disabled = true;
             try {
                 let response = await fetch(API_URL);
                 if(!response.ok) throw new Error('HTTP ' + response.status);
@@ -612,10 +697,13 @@
                 globalTanksCached = Array.isArray(json.tanks) ? json.tanks : [];
                 globalLinhasCached = json.linhas || {};
                 updateUI(globalTanksCached, globalLinhasCached);
+                setSyncStatus('online');
             } catch (err) {
                 console.error("Erro na comunicação em nuvem:", err);
+                setSyncStatus('offline');
             } finally {
                 isSyncing = false;
+                if(btn) btn.disabled = false;
             }
         }
 
@@ -679,6 +767,13 @@
             const container = document.getElementById(containerId);
             if(!container) return;
             container.innerHTML = '';
+            if(!tanksData || tanksData.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text-muted); font-family:'Azeret Mono',monospace;">
+                    <i class="fa-solid fa-database" style="font-size:40px; opacity:0.3; margin-bottom:14px; display:block;"></i>
+                    Aguardando dados dos tanques...
+                </div>`;
+                return;
+            }
             tanksData.forEach(tank => {
                 const max = Number(tank.max) || 0;
                 const vol = Number(tank.vol) || 0;
@@ -957,30 +1052,36 @@
 
         function switchView(view) {
             currentView = view;
+            try { sessionStorage.setItem('ihms_view', view); } catch(e){}
             document.getElementById('app-sidebar').classList.remove('open');
             document.getElementById('mobile-sidebar-overlay').classList.remove('active');
 
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('view-'+view).classList.add('active');
-            document.getElementById('btn-'+view).classList.add('active');
-            
+            const viewEl = document.getElementById('view-'+view);
+            const btnEl = document.getElementById('btn-'+view);
+            if(viewEl) viewEl.classList.add('active');
+            if(btnEl) btnEl.classList.add('active');
+
             const titles = { qx: 'Módulo Quase-Xarope (TQs 510-517)', bebidas: 'Módulo Bebidas (TQs 701-703)', quick: 'Painel Geral de Preenchimento Rápido', config: 'Painel de Configuração ADM' };
             document.getElementById('header-title').innerText = titles[view] || '';
-            
+
             if(view === 'config') fetchAdminUsers();
-            else updateUI(globalTanksCached, {});
+            else updateUI(globalTanksCached, globalLinhasCached);
         }
 
         function switchLineView(lineKey) {
             currentView = lineKey;
+            try { sessionStorage.setItem('ihms_view', lineKey); } catch(e){}
             document.getElementById('app-sidebar').classList.remove('open');
             document.getElementById('mobile-sidebar-overlay').classList.remove('active');
 
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('view-'+lineKey).classList.add('active');
-            document.getElementById('btn-'+lineKey).classList.add('active');
+            const viewEl = document.getElementById('view-'+lineKey);
+            const btnEl = document.getElementById('btn-'+lineKey);
+            if(viewEl) viewEl.classList.add('active');
+            if(btnEl) btnEl.classList.add('active');
             document.getElementById('header-title').innerText = `Controle de Processo - Linha ${lineKey.replace('linha','')}`;
             fetchDatabase();
         }
