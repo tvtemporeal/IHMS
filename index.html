@@ -88,33 +88,111 @@
         
         /* TANQUES */
         .tank-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
-        .tank-card { background-color: var(--bg-panel); border: 1px solid var(--border-panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .tank-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-panel); padding-bottom: 10px; }
-        .tank-name { font-size: 20px; font-weight: 700; font-family: 'Azeret Mono', monospace; }
-        .tank-cap { font-family: 'Azeret Mono', monospace; font-size: 11px; color: var(--text-muted); }
-        
-        .tank-inox-body { width: 160px; height: 220px; background: linear-gradient(90deg, #2a2a2a 0%, #5a5a5a 25%, #808080 50%, #4a4a4a 75%, #1f1f1f 100%); border: 2px solid #555555; border-radius: 15px; position: relative; margin-bottom: 20px; box-shadow: 8px 8px 20px rgba(0,0,0,0.6); overflow: hidden; }
-        .tank-glass-gauge-inner { position: absolute; left: 15px; top: 15px; bottom: 15px; width: 18px; background: rgba(0, 0, 0, 0.7); border: 1px solid #333; border-radius: 8px; padding: 2px; }
-        .gauge-liquid { position: absolute; bottom: 2px; left: 2px; width: calc(100% - 4px); border-radius: 6px; transition: height 0.8s ease; }
-        
-        .liquid-red { background: linear-gradient(90deg, #990000, #e50914, #ff4d4d); box-shadow: 0 0 10px rgba(229,9,20,0.5); }
-        .liquid-green { background: linear-gradient(90deg, #006633, #00cc66, #33ff99); box-shadow: 0 0 10px rgba(0,204,102,0.5); }
-        .liquid-orange { background: linear-gradient(90deg, #cc6600, #ff8c00, #ffb366); box-shadow: 0 0 10px rgba(255,140,0,0.5); }
-        .liquid-purple { background: linear-gradient(90deg, #591da8, #8a2be2, #b366ff); box-shadow: 0 0 10px rgba(138,43,226,0.5); }
-        .liquid-empty { background: transparent; }
-        .display-percent-inner { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-family: 'Azeret Mono', monospace; font-size: 16px; font-weight: 700; background: rgba(0, 0, 0, 0.75); padding: 6px 10px; border-radius: 6px; border: 1px solid #444; }
+        /* ================= TANQUE INDUSTRIAL SCADA ================= */
+        .tank-card {
+            background: linear-gradient(160deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 0;
+            display: flex; flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+        .tank-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+            opacity: 0.7;
+        }
+        .tank-card:hover { transform: translateY(-2px); border-color: #3a3a3a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .tank-card.status-cip { border-color: rgba(0,150,255,0.3); }
+        .tank-card.status-cip::before { background: linear-gradient(90deg, transparent, #0096ff, transparent); }
+        .tank-card.status-off { opacity: 0.55; }
 
-        /* MÓDULO CIP INTERNO DO TANQUE */
-        .tank-inox-body.mode-cip .tank-glass-gauge-inner, 
-        .tank-inox-body.mode-cip .display-percent-inner { display: none; }
-        .tank-inox-body .cip-spray-system { transform: scale(0.65); transform-origin: top center; margin-top: 15px; }
+        .tank-header {
+            padding: 14px 18px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.4); border-bottom: 1px solid #1f1f1f;
+        }
+        .tank-name { font-size: 18px; font-weight: 800; font-family: 'Azeret Mono', monospace; letter-spacing: 1px; color:#fff; }
+        .tank-name .tag-no { color: var(--accent-red); }
+        .tank-cap { font-family: 'Azeret Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
 
-        .tank-data { width: 100%; display: flex; flex-direction: column; gap: 6px; }
-        .data-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; border: 1px solid #1c1c1c; width: 100%; }
-        .data-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
-        .data-value { font-family: 'Azeret Mono', monospace; font-size: 13px; font-weight: 700; text-align: right; }
-        .edit-tank-btn { background: #262626; border: none; color: #fff; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-top: 10px; width: 100%; font-weight: bold; transition: 0.2s; }
-        .edit-tank-btn:hover { background: var(--accent-red); }
+        /* corpo central do tanque com SVG */
+        .tank-visual {
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            padding: 18px 14px 12px;
+            background: radial-gradient(ellipse at center top, rgba(255,255,255,0.025), transparent 70%);
+        }
+        .tank-svg { width: 100%; max-width: 180px; height: auto; display: block; }
+
+        /* badges status */
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-family: 'Azeret Mono', monospace; font-size: 10px; font-weight: 800;
+            padding: 4px 9px; border-radius: 12px; letter-spacing: 1px; text-transform: uppercase;
+            border: 1px solid currentColor;
+        }
+        .status-pill .pill-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
+        .status-prod { color: var(--accent-green); background: rgba(0,204,102,0.08); }
+        .status-cip-tag { color: #4ab8ff; background: rgba(0,150,255,0.08); }
+        .status-off-tag { color: #888; background: rgba(255,255,255,0.04); border-color:#444; }
+
+        /* Painel de dados embaixo */
+        .tank-data {
+            padding: 12px 16px 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+            border-top: 1px solid #1f1f1f;
+            background: rgba(0,0,0,0.25);
+        }
+        .data-cell { display: flex; flex-direction: column; gap: 2px; }
+        .data-cell.full { grid-column: 1 / -1; }
+        .data-label {
+            font-size: 9.5px; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 1.2px; font-family: 'Azeret Mono', monospace;
+        }
+        .data-value {
+            font-family: 'Azeret Mono', monospace; font-size: 13.5px; font-weight: 700;
+            color: #fff; letter-spacing: 0.3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .data-value.green { color: var(--accent-green); }
+        .data-value.orange { color: var(--accent-orange); }
+        .data-value.red { color: var(--accent-red); }
+        .data-value.dim { color: var(--text-muted); font-weight: 400; }
+
+        /* Botão de ajustar */
+        .edit-tank-btn {
+            margin: 0 16px 14px;
+            background: linear-gradient(180deg, #1a1a1a, #0f0f0f);
+            border: 1px solid #2a2a2a; color: #aaa;
+            padding: 10px; border-radius: 6px; cursor: pointer; font-size: 12px;
+            font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+            transition: all 0.2s;
+            font-family: 'Azeret Mono', monospace;
+        }
+        .edit-tank-btn:hover { background: var(--accent-red); color: #fff; border-color: var(--accent-red); }
+
+        /* Líquido dentro do tanque (animação suave) */
+        @keyframes wave {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-25%); }
+        }
+
+        /* Spray CIP animado dentro do SVG */
+        @keyframes spray-drop {
+            0% { opacity: 0; transform: translateY(0); }
+            20% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(60px); }
+        }
+
+        @media (max-width: 768px) {
+            .tank-data { grid-template-columns: 1fr; }
+        }
 
         /* LINHAS DE ENVASE */
         .line-panel-container { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: start; }
@@ -824,6 +902,14 @@
             return 'liquid-empty';
         }
 
+        function corLiquidoHex(percent, isCip) {
+            if(isCip) return { topo:'#4ab8ff', meio:'#0096ff', base:'#00609e' };
+            if(percent >= 80) return { topo:'#33ff99', meio:'#00cc66', base:'#006633' };
+            if(percent >= 40) return { topo:'#ffb366', meio:'#ff8c00', base:'#cc6600' };
+            if(percent > 0)   return { topo:'#ff8a85', meio:'#e50914', base:'#990000' };
+            return null;
+        }
+
         function renderTanks(containerId, tanksData) {
             const container = document.getElementById(containerId);
             if(!container) return;
@@ -841,33 +927,161 @@
                 let percent = max > 0 ? Math.round((vol / max) * 100) : 0;
                 if(percent < 0) percent = 0;
                 if(percent > 100) percent = 100;
-                let liquidClass = getLiquidColorByPercent(percent);
-                let isCip = tank.status === 'CIP ATIVO';
+
                 const tankId = escapeHtml(tank.id);
                 const tankProd = escapeHtml(cleanStr(tank.prod));
                 const tankBatch = escapeHtml(cleanStr(tank.batch));
-                const tankStatus = escapeHtml(tank.status || 'PRODUÇÃO');
-                const capKl = max > 0 ? (max/1000) : 0;
+                const tankStatus = (tank.status || 'PRODUÇÃO').toUpperCase();
+                const isCip = tankStatus === 'CIP ATIVO';
+                const isOff = !tankProd || tankProd.toUpperCase() === 'OFF' || tankProd === '—';
+                const capKl = max > 0 ? (max/1000).toFixed(max % 1000 === 0 ? 0 : 1) : 0;
+
+                // status pill
+                let statusPill;
+                if(isCip) statusPill = `<span class="status-pill status-cip-tag"><span class="pill-dot"></span>CIP</span>`;
+                else if(isOff) statusPill = `<span class="status-pill status-off-tag"><span class="pill-dot"></span>OFF</span>`;
+                else statusPill = `<span class="status-pill status-prod"><span class="pill-dot"></span>PROD</span>`;
+
+                // Geometria do tanque SVG
+                const TANK_X = 50, TANK_W = 100;
+                const TANK_TOP = 30, TANK_H = 180;
+                const TANK_BOTTOM = TANK_TOP + TANK_H;
+                const liquidH = Math.round((percent/100) * TANK_H);
+                const liquidY = TANK_BOTTOM - liquidH;
+
+                const cor = corLiquidoHex(percent, isCip);
+                const gradId = `g_${tankId}`;
+                const waveY = liquidY - 2;
+
+                // SVG
+                let svg = `
+                <svg class="tank-svg" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    ${cor ? `<linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="${cor.base}" stop-opacity="0.9"/>
+                      <stop offset="50%" stop-color="${cor.meio}"/>
+                      <stop offset="100%" stop-color="${cor.topo}" stop-opacity="0.9"/>
+                    </linearGradient>` : ''}
+                    <linearGradient id="bodyGrad_${tankId}" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#2a2a2a"/>
+                      <stop offset="40%" stop-color="#4a4a4a"/>
+                      <stop offset="55%" stop-color="#6a6a6a"/>
+                      <stop offset="70%" stop-color="#4a4a4a"/>
+                      <stop offset="100%" stop-color="#1a1a1a"/>
+                    </linearGradient>
+                    <clipPath id="clipBody_${tankId}">
+                      <path d="M ${TANK_X+10} ${TANK_TOP}
+                               Q ${TANK_X} ${TANK_TOP+8} ${TANK_X} ${TANK_TOP+18}
+                               L ${TANK_X} ${TANK_BOTTOM-12}
+                               Q ${TANK_X} ${TANK_BOTTOM} ${TANK_X+15} ${TANK_BOTTOM}
+                               L ${TANK_X+TANK_W-15} ${TANK_BOTTOM}
+                               Q ${TANK_X+TANK_W} ${TANK_BOTTOM} ${TANK_X+TANK_W} ${TANK_BOTTOM-12}
+                               L ${TANK_X+TANK_W} ${TANK_TOP+18}
+                               Q ${TANK_X+TANK_W} ${TANK_TOP+8} ${TANK_X+TANK_W-10} ${TANK_TOP}
+                               Z"/>
+                    </clipPath>
+                  </defs>
+
+                  <!-- Tubulação superior -->
+                  <line x1="100" y1="0" x2="100" y2="${TANK_TOP-5}" stroke="#555" stroke-width="4"/>
+                  <rect x="92" y="${TANK_TOP-10}" width="16" height="10" fill="#666" rx="1"/>
+                  <circle cx="100" cy="8" r="5" fill="#444" stroke="#666" stroke-width="1"/>
+
+                  <!-- Corpo (cilindro) -->
+                  <path d="M ${TANK_X+10} ${TANK_TOP}
+                           Q ${TANK_X} ${TANK_TOP+8} ${TANK_X} ${TANK_TOP+18}
+                           L ${TANK_X} ${TANK_BOTTOM-12}
+                           Q ${TANK_X} ${TANK_BOTTOM} ${TANK_X+15} ${TANK_BOTTOM}
+                           L ${TANK_X+TANK_W-15} ${TANK_BOTTOM}
+                           Q ${TANK_X+TANK_W} ${TANK_BOTTOM} ${TANK_X+TANK_W} ${TANK_BOTTOM-12}
+                           L ${TANK_X+TANK_W} ${TANK_TOP+18}
+                           Q ${TANK_X+TANK_W} ${TANK_TOP+8} ${TANK_X+TANK_W-10} ${TANK_TOP}
+                           Z"
+                        fill="url(#bodyGrad_${tankId})" stroke="#1a1a1a" stroke-width="1.5"/>
+
+                  <!-- Líquido dentro (clipado) -->
+                  ${cor && !isCip ? `
+                    <g clip-path="url(#clipBody_${tankId})">
+                      <rect x="${TANK_X}" y="${liquidY}" width="${TANK_W}" height="${liquidH}" fill="url(#${gradId})"/>
+                      <!-- linha de superfície -->
+                      <path d="M ${TANK_X} ${liquidY} Q ${TANK_X+25} ${liquidY-3} ${TANK_X+50} ${liquidY} T ${TANK_X+TANK_W} ${liquidY}"
+                            stroke="${cor.topo}" stroke-width="1.5" fill="none" opacity="0.8"/>
+                    </g>
+                  ` : ''}
+
+                  <!-- CIP: spray ball animado -->
+                  ${isCip ? `
+                    <g clip-path="url(#clipBody_${tankId})">
+                      <line x1="100" y1="${TANK_TOP}" x2="100" y2="${TANK_TOP+30}" stroke="#888" stroke-width="3"/>
+                      <circle cx="100" cy="${TANK_TOP+38}" r="9" fill="#aaa" stroke="#666" stroke-width="1"/>
+                      <circle cx="100" cy="${TANK_TOP+38}" r="3" fill="#333"/>
+                      ${[0,1,2,3,4].map(i => `
+                        <circle cx="${85+i*7}" cy="${TANK_TOP+50}" r="1.5" fill="#4ab8ff">
+                          <animate attributeName="cy" from="${TANK_TOP+50}" to="${TANK_BOTTOM-10}" dur="${1.2+i*0.15}s" repeatCount="indefinite"/>
+                          <animate attributeName="opacity" values="0;1;1;0" dur="${1.2+i*0.15}s" repeatCount="indefinite"/>
+                        </circle>
+                      `).join('')}
+                    </g>
+                  ` : ''}
+
+                  <!-- Escala lateral (marcações) -->
+                  <g stroke="#444" stroke-width="0.5" font-family="Azeret Mono, monospace" font-size="6.5" fill="#666">
+                    ${[0,25,50,75,100].map(m => {
+                      const y = TANK_BOTTOM - (m/100)*TANK_H;
+                      return `<line x1="${TANK_X+TANK_W+2}" y1="${y}" x2="${TANK_X+TANK_W+8}" y2="${y}"/>
+                              <text x="${TANK_X+TANK_W+10}" y="${y+2}">${m}%</text>`;
+                    }).join('')}
+                  </g>
+
+                  <!-- Visor de % grande -->
+                  <g>
+                    <rect x="${TANK_X+12}" y="${TANK_TOP+TANK_H/2-13}" width="76" height="26" rx="4" fill="rgba(0,0,0,0.78)" stroke="#444"/>
+                    <text x="${TANK_X+50}" y="${TANK_TOP+TANK_H/2+5}" text-anchor="middle" font-family="Azeret Mono, monospace" font-size="16" font-weight="800" fill="#fff">${percent}%</text>
+                  </g>
+
+                  <!-- Base / pés -->
+                  <rect x="${TANK_X+15}" y="${TANK_BOTTOM}" width="10" height="14" fill="#333"/>
+                  <rect x="${TANK_X+TANK_W-25}" y="${TANK_BOTTOM}" width="10" height="14" fill="#333"/>
+
+                  <!-- Válvula lateral -->
+                  <circle cx="${TANK_X-3}" cy="${TANK_BOTTOM-25}" r="6" fill="none" stroke="#666" stroke-width="1.5"/>
+                  <line x1="${TANK_X-9}" y1="${TANK_BOTTOM-25}" x2="${TANK_X+3}" y2="${TANK_BOTTOM-25}" stroke="#666" stroke-width="1.5"/>
+                  <line x1="${TANK_X-3}" y1="${TANK_BOTTOM-31}" x2="${TANK_X-3}" y2="${TANK_BOTTOM-19}" stroke="#666" stroke-width="1.5"/>
+                </svg>`;
 
                 const card = document.createElement('div');
-                card.className = 'tank-card';
+                let cardClasses = 'tank-card';
+                if(isCip) cardClasses += ' status-cip';
+                if(isOff) cardClasses += ' status-off';
+                card.className = cardClasses;
                 card.innerHTML = `
-                    <div class="tank-header"><span class="tank-name">TQ-${tankId}</span><span class="tank-cap">CAP: ${capKl}kL</span></div>
-                    <div class="tank-inox-body ${isCip ? 'mode-cip' : ''}">
-                        <div class="tank-glass-gauge-inner"><div class="gauge-liquid ${liquidClass}" style="height: ${percent}%;"></div></div>
-                        <div class="display-percent-inner">${percent}%</div>
-                        <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
+                    <div class="tank-header">
+                        <span class="tank-name">TQ<span class="tag-no">-${tankId}</span></span>
+                        <span class="tank-cap">${capKl} kL</span>
                     </div>
+                    <div class="tank-visual">${svg}</div>
                     <div class="tank-data">
-                        <div class="data-row"><span class="data-label">Volume Real</span><span class="data-value" style="color:var(--accent-green);">${vol.toLocaleString('pt-BR')} L</span></div>
-                        <div class="data-row"><span class="data-label">Produto</span><span class="data-value" style="color:#fff;">${tankProd || '—'}</span></div>
-                        <div class="data-row"><span class="data-label">Status</span><span class="data-value" style="color:var(--accent-orange); font-weight:bold;">${tankStatus}</span></div>
+                        <div class="data-cell">
+                            <span class="data-label">Status</span>
+                            <span class="data-value">${statusPill}</span>
+                        </div>
+                        <div class="data-cell">
+                            <span class="data-label">Volume</span>
+                            <span class="data-value green">${vol.toLocaleString('pt-BR')} <span style="font-size:10px; color:var(--text-muted);">L</span></span>
+                        </div>
+                        <div class="data-cell full">
+                            <span class="data-label">Produto</span>
+                            <span class="data-value ${tankProd ? '' : 'dim'}">${tankProd || '—'}</span>
+                        </div>
+                        <div class="data-cell full">
+                            <span class="data-label">Batch</span>
+                            <span class="data-value ${tankBatch ? '' : 'dim'}">${tankBatch || '—'}</span>
+                        </div>
                     </div>
-                    <button class="edit-tank-btn" data-id="${tankId}" data-vol="${vol}" data-prod="${tankProd}" data-batch="${tankBatch}" data-status="${tankStatus}"><i class="fa-solid fa-pen-to-square"></i> Ajustar Ativo</button>
+                    <button class="edit-tank-btn" data-id="${tankId}" data-vol="${vol}" data-prod="${tankProd}" data-batch="${tankBatch}" data-status="${escapeHtml(tankStatus)}"><i class="fa-solid fa-pen-to-square"></i> Ajustar Ativo</button>
                 `;
                 container.appendChild(card);
             });
-            // Liga eventos sem inline onclick (anti-XSS)
             container.querySelectorAll('.edit-tank-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     openEditPanel(btn.dataset.id, btn.dataset.vol, btn.dataset.prod, btn.dataset.batch, btn.dataset.status);
