@@ -253,6 +253,9 @@
             
             <div id="admin-divider" style="display:none; color: var(--accent-red); font-size: 10px; padding: 20px 20px 5px; text-transform: uppercase; font-family: 'Azeret Mono', monospace;">Controle ADM</div>
             <button class="nav-btn" onclick="switchView('config')" id="btn-config" style="display:none;"><i class="fa-solid fa-users-cog"></i> Configurações</button>
+
+            <div style="flex:1;"></div>
+            <button class="nav-btn" id="btn-logout" style="display:none; color:var(--accent-red); margin-top:auto;" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
         </nav>
     </aside>
 
@@ -396,10 +399,34 @@
         // URL DO DEPLOY REAL EM NUVEM FORNECIDO POR VOCÊ
         const API_URL = "https://script.google.com/macros/s/AKfycbwQ0GKSA-2wJ3Yuf7_QEh3BA-zZEGaojSWcYjDDajYvVlYksLoqHxC2lAwjahB_jxhwxg/exec";
         
+        // Constantes públicas (não há senha hardcoded — autenticação é sempre pelo backend)
+        const ADMIN_BR_MASTER = "5758236";  // apenas referência visual, não dá acesso sozinha
+
+        // Anti-XSS: escapa todo texto vindo do backend antes de injetar em HTML
+        function escapeHtml(v) {
+            if (v === null || v === undefined) return '';
+            return String(v)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        // Toast não-bloqueante (substitui alert)
+        function toast(msg, type) {
+            const el = document.createElement('div');
+            el.textContent = msg;
+            const cor = type === 'erro' ? '#e50914' : (type === 'ok' ? '#00cc66' : '#262626');
+            el.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:${cor};color:#fff;padding:14px 22px;border-radius:8px;font-weight:600;z-index:99999;box-shadow:0 8px 24px rgba(0,0,0,0.5);font-size:14px;max-width:90%;text-align:center;`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 3200);
+        }
+
         let currentView = 'qx';
         let isRegisteredMode = false;
         let globalTanksCached = [];
-        let syncInterval;
+        let globalLinhasCached = {};
+        let syncInterval = null;
+        let isSyncing = false;
+        let userIsTyping = false;
 
         window.onload = function() {
             const savedUser = localStorage.getItem('ihms_user');
@@ -411,52 +438,84 @@
 
         function iniciarSistema(auth) {
             document.getElementById('login-screen').style.display = 'none';
-            let isUserAdmin = (auth.adm === true || auth.adm === "TRUE" || auth.adm === "true");
-            document.getElementById('user-display-tag').innerHTML = `Op: ${auth.name} ${isUserAdmin ? ' <span style="color:var(--accent-red); font-weight:bold;">[ADM]</span>' : ''}`;
-            
-            if(isUserAdmin || auth.br === "5758236") {
+            // Admin só se o backend confirmou. NUNCA confiar apenas no BR do localStorage.
+            let isUserAdmin = (auth.adm === true || auth.adm === "TRUE" || auth.adm === "true" || auth.adm === "SIM" || auth.adm === 1 || auth.adm === "1");
+            document.getElementById('user-display-tag').innerHTML = `Op: ${escapeHtml(auth.name)} ${isUserAdmin ? ' <span style="color:var(--accent-red); font-weight:bold;">[ADM]</span>' : ''}`;
+
+            if(isUserAdmin) {
                 document.getElementById('admin-divider').style.display = 'block';
                 document.getElementById('btn-config').style.display = 'flex';
             }
-            
+
+            // Botão de logout
+            const logoutBtn = document.getElementById('btn-logout');
+            if(logoutBtn) logoutBtn.style.display = 'flex';
+
             fetchDatabase();
-            if(!syncInterval) syncInterval = setInterval(fetchDatabase, 5000);
+            startSync();
+        }
+
+        function startSync() {
+            if(syncInterval) return;
+            syncInterval = setInterval(() => {
+                // Pausa o sync se a aba estiver escondida ou se usuário está digitando
+                if(document.hidden || userIsTyping) return;
+                fetchDatabase();
+            }, 8000);
+        }
+        function stopSync() {
+            if(syncInterval) { clearInterval(syncInterval); syncInterval = null; }
+        }
+        // Pausa sync quando aba escondida
+        document.addEventListener('visibilitychange', () => {
+            if(document.hidden) { /* deixa o interval correndo, fetchDatabase é skipado */ }
+            else { fetchDatabase(); }
+        });
+
+        function doLogout() {
+            if(!confirm('Sair do sistema?')) return;
+            stopSync();
+            localStorage.removeItem('ihms_user');
+            location.reload();
         }
 
         async function handleLoginAuth() {
             let br = document.getElementById('login-br').value.trim();
-            let senha = document.getElementById('login-senha').value.trim();
+            let senha = document.getElementById('login-senha').value;
             let btn = document.getElementById('main-login-btn');
-            
-            if(!br || !senha) { alert("Preencha os campos obrigatórios!"); return; }
 
-            if (br === "5758236" && senha === "291201") {
-                let localAuth = { found: true, valid: true, name: "JOÃO PEDRO", adm: true, br: br };
-                localStorage.setItem('ihms_user', JSON.stringify(localAuth));
-                iniciarSistema(localAuth);
-                return;
-            }
+            if(!br || !senha) { toast("Preencha BR e senha", "erro"); return; }
+            if(senha.length < 4) { toast("Senha muito curta", "erro"); return; }
 
             if(isRegisteredMode) {
-                let nome = document.getElementById('login-nome').value;
+                let nome = document.getElementById('login-nome').value.trim();
                 let repetir = document.getElementById('login-repetir').value;
-                if(senha !== repetir) { alert("As senhas digitadas não conferem!"); return; }
-                
-                btn.innerText = "Sincronizando com Banco...";
+                if(!nome) { toast("Informe seu nome", "erro"); return; }
+                if(senha !== repetir) { toast("As senhas não conferem", "erro"); return; }
+
+                btn.disabled = true;
+                btn.innerText = "Cadastrando...";
                 try {
-                    let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "register_user", br: br, nome: nome, senha: senate }) });
-                    if(res.ok) {
-                        let newAuth = { found: true, valid: true, name: nome, adm: false, br: br };
+                    let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "register_user", br: br, nome: nome, senha: senha }) });
+                    let data = await res.json().catch(() => ({}));
+                    if(res.ok && data.success !== false) {
+                        let newAuth = { found: true, valid: true, name: nome, adm: !!data.adm, br: br };
                         localStorage.setItem('ihms_user', JSON.stringify(newAuth));
                         iniciarSistema(newAuth);
-                    } else { throw new Error("Erro"); }
+                    } else {
+                        toast(data.erro || "Erro ao cadastrar (verifique o backend)", "erro");
+                        btn.disabled = false;
+                        btn.innerText = "Confirmar Primeiro Acesso";
+                    }
                 } catch (error) {
-                    alert("Erro ao gravar. Garanta o deploy em 'Nova Versão' no Apps Script!");
+                    toast("Falha de comunicação com o servidor", "erro");
+                    btn.disabled = false;
                     btn.innerText = "Confirmar Primeiro Acesso";
                 }
                 return;
             }
 
+            btn.disabled = true;
             btn.innerText = "Consultando...";
             try {
                 let response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "check_login", br: br, senha: senha }) });
@@ -467,19 +526,20 @@
                     document.getElementById('login-flow-title').innerText = "Cadastro de Primeiro Acesso";
                     document.getElementById('block-nome').style.display = "flex";
                     document.getElementById('block-repetir').style.display = "flex";
+                    btn.disabled = false;
                     btn.innerText = "Confirmar Primeiro Acesso";
+                } else if(auth.valid) {
+                    auth.br = br;
+                    localStorage.setItem('ihms_user', JSON.stringify(auth));
+                    iniciarSistema(auth);
                 } else {
-                    if(auth.valid) {
-                        auth.br = br;
-                        localStorage.setItem('ihms_user', JSON.stringify(auth));
-                        iniciarSistema(auth);
-                    } else {
-                        alert("Senha incorreta!");
-                        btn.innerText = "Autenticar Sistema";
-                    }
+                    toast("Senha incorreta", "erro");
+                    btn.disabled = false;
+                    btn.innerText = "Autenticar Sistema";
                 }
             } catch (err) {
-                alert("Erro de comunicação com a Nuvem Google.");
+                toast("Erro de comunicação com a Nuvem Google", "erro");
+                btn.disabled = false;
                 btn.innerText = "Autenticar Sistema";
             }
         }
@@ -487,33 +547,64 @@
         const cleanStr = (val) => (val && val !== 'undefined') ? val : '';
 
         async function fetchDatabase() {
+            if(isSyncing) return;
+            isSyncing = true;
             try {
                 let response = await fetch(API_URL);
+                if(!response.ok) throw new Error('HTTP ' + response.status);
                 let json = await response.json();
-                globalTanksCached = json.tanks;
-                updateUI(json.tanks, json.linhas);
-            } catch (err) { console.error("Erro na comunicação em nuvem:", err); }
+                globalTanksCached = Array.isArray(json.tanks) ? json.tanks : [];
+                globalLinhasCached = json.linhas || {};
+                updateUI(globalTanksCached, globalLinhasCached);
+            } catch (err) {
+                console.error("Erro na comunicação em nuvem:", err);
+            } finally {
+                isSyncing = false;
+            }
         }
 
+        // Marca quando usuário está digitando em qualquer input (pausa render)
+        document.addEventListener('focusin', (e) => {
+            if(e.target.matches('input, select, textarea')) userIsTyping = true;
+        });
+        document.addEventListener('focusout', (e) => {
+            if(e.target.matches('input, select, textarea')) {
+                setTimeout(() => { userIsTyping = false; }, 500);
+            }
+        });
+
         function updateUI(tanks, linhas) {
+            if(userIsTyping) return; // não interrompe digitação
+            tanks = Array.isArray(tanks) ? tanks : [];
+            linhas = linhas || {};
             if (currentView === 'qx') {
-                renderTanks('grid-qx', tanks.filter(t => parseInt(t.id) < 700));
+                renderTanks('grid-qx', tanks.filter(t => {
+                    let n = parseInt(t.id);
+                    return !isNaN(n) && n < 700;
+                }));
             } else if (currentView === 'bebidas') {
-                renderTanks('grid-bebidas', tanks.filter(t => parseInt(t.id) >= 700));
+                renderTanks('grid-bebidas', tanks.filter(t => {
+                    let n = parseInt(t.id);
+                    return !isNaN(n) && n >= 700;
+                }));
             } else if (currentView === 'quick') {
                 renderQuickFillTable(tanks);
             } else if (currentView === 'config') {
                 // Puxado sob demanda
             } else if (currentView.startsWith('linha')) {
                 let num = currentView.replace('linha','');
-                if(linhas[currentView]) {
-                    renderCipPanel('cip-panel-' + currentView, linhas[currentView], num);
-                    let produtoLimpo = cleanStr(linhas[currentView].prod);
-                    document.getElementById('title-machine-'+num).innerText = num === '5' ? `ENCHEDORA KAPO: ${produtoLimpo||'AGUARDANDO'}` : `ENCHEDORA LINHA ${num}`;
+                let lineData = linhas[currentView];
+                if(lineData) {
+                    // garante objeto cip pra não quebrar
+                    if(!lineData.cip) lineData.cip = {};
+                    renderCipPanel('cip-panel-' + currentView, lineData, num);
+                    let produtoLimpo = cleanStr(lineData.prod);
+                    let titEl = document.getElementById('title-machine-'+num);
+                    if(titEl) titEl.innerText = num === '5' ? `ENCHEDORA KAPO: ${produtoLimpo||'AGUARDANDO'}` : `ENCHEDORA LINHA ${num}`;
 
                     let fillerModule = document.querySelector('#view-' + currentView + ' .large-filler-module');
                     if (fillerModule) {
-                        if(linhas[currentView].status === 'CIP ATIVO') fillerModule.classList.add('mode-cip');
+                        if(lineData.status === 'CIP ATIVO') fillerModule.classList.add('mode-cip');
                         else fillerModule.classList.remove('mode-cip');
                     }
                 }
@@ -530,65 +621,108 @@
 
         function renderTanks(containerId, tanksData) {
             const container = document.getElementById(containerId);
+            if(!container) return;
             container.innerHTML = '';
             tanksData.forEach(tank => {
-                let percent = Math.round((tank.vol / tank.max) * 100);
+                const max = Number(tank.max) || 0;
+                const vol = Number(tank.vol) || 0;
+                let percent = max > 0 ? Math.round((vol / max) * 100) : 0;
+                if(percent < 0) percent = 0;
+                if(percent > 100) percent = 100;
                 let liquidClass = getLiquidColorByPercent(percent);
                 let isCip = tank.status === 'CIP ATIVO';
-                
-                container.innerHTML += `
-                    <div class="tank-card">
-                        <div class="tank-header"><span class="tank-name">TQ-${tank.id}</span><span class="tank-cap">CAP: ${tank.max/1000}kL</span></div>
-                        <div class="tank-inox-body ${isCip ? 'mode-cip' : ''}">
-                            <div class="tank-glass-gauge-inner"><div class="gauge-liquid ${liquidClass}" style="height: ${percent}%;"></div></div>
-                            <div class="display-percent-inner">${percent}%</div>
-                            <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
-                        </div>
-                        <div class="tank-data">
-                            <div class="data-row"><span class="data-label">Volume Real</span><span class="data-value" style="color:var(--accent-green);">${Number(tank.vol).toLocaleString('pt-BR')} L</span></div>
-                            <div class="data-row"><span class="data-label">Produto</span><span class="data-value" style="color:#fff;">${cleanStr(tank.prod)}</span></div>
-                            <div class="data-row"><span class="data-label">Status</span><span class="data-value" style="color:var(--accent-orange); font-weight:bold;">${tank.status || 'PRODUÇÃO'}</span></div>
-                        </div>
-                        <button class="edit-tank-btn" onclick="openEditPanel('${tank.id}', ${tank.vol}, '${cleanStr(tank.prod)}', '${cleanStr(tank.batch)}', '${tank.status}')"><i class="fa-solid fa-pen-to-square"></i> Ajustar Ativo</button>
+                const tankId = escapeHtml(tank.id);
+                const tankProd = escapeHtml(cleanStr(tank.prod));
+                const tankBatch = escapeHtml(cleanStr(tank.batch));
+                const tankStatus = escapeHtml(tank.status || 'PRODUÇÃO');
+                const capKl = max > 0 ? (max/1000) : 0;
+
+                const card = document.createElement('div');
+                card.className = 'tank-card';
+                card.innerHTML = `
+                    <div class="tank-header"><span class="tank-name">TQ-${tankId}</span><span class="tank-cap">CAP: ${capKl}kL</span></div>
+                    <div class="tank-inox-body ${isCip ? 'mode-cip' : ''}">
+                        <div class="tank-glass-gauge-inner"><div class="gauge-liquid ${liquidClass}" style="height: ${percent}%;"></div></div>
+                        <div class="display-percent-inner">${percent}%</div>
+                        <div class="cip-spray-system"><div class="spray-pipe"></div><div class="spray-ball"></div><div class="spray-water"></div></div>
                     </div>
+                    <div class="tank-data">
+                        <div class="data-row"><span class="data-label">Volume Real</span><span class="data-value" style="color:var(--accent-green);">${vol.toLocaleString('pt-BR')} L</span></div>
+                        <div class="data-row"><span class="data-label">Produto</span><span class="data-value" style="color:#fff;">${tankProd || '—'}</span></div>
+                        <div class="data-row"><span class="data-label">Status</span><span class="data-value" style="color:var(--accent-orange); font-weight:bold;">${tankStatus}</span></div>
+                    </div>
+                    <button class="edit-tank-btn" data-id="${tankId}" data-vol="${vol}" data-prod="${tankProd}" data-batch="${tankBatch}" data-status="${tankStatus}"><i class="fa-solid fa-pen-to-square"></i> Ajustar Ativo</button>
                 `;
+                container.appendChild(card);
+            });
+            // Liga eventos sem inline onclick (anti-XSS)
+            container.querySelectorAll('.edit-tank-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    openEditPanel(btn.dataset.id, btn.dataset.vol, btn.dataset.prod, btn.dataset.batch, btn.dataset.status);
+                });
             });
         }
 
         function renderQuickFillTable(tanks) {
             const tbody = document.getElementById('quick-fill-tbody');
-            if(tbody.children.length > 0 && document.activeElement.tagName === 'INPUT') return; 
+            if(!tbody) return;
+            // Só pula re-render se o foco está em um input DESTA tabela
+            const active = document.activeElement;
+            if(tbody.contains(active) && active.tagName === 'INPUT') return;
             tbody.innerHTML = '';
             tanks.forEach(tank => {
-                tbody.innerHTML += `
-                    <tr data-id="${tank.id}">
-                        <td style="font-family:'Azeret Mono', monospace; font-weight:bold; color:var(--accent-red);">TQ-${tank.id}</td>
-                        <td><input type="number" class="quick-input q-vol" value="${tank.vol}"></td>
-                        <td><input type="text" class="quick-input q-prod" value="${cleanStr(tank.prod)}"></td>
-                        <td><input type="text" class="quick-input q-batch" value="${cleanStr(tank.batch)}"></td>
-                    </tr>
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-id', tank.id);
+                tr.innerHTML = `
+                    <td style="font-family:'Azeret Mono', monospace; font-weight:bold; color:var(--accent-red);">TQ-${escapeHtml(tank.id)}</td>
+                    <td><input type="number" class="quick-input q-vol" value="${Number(tank.vol)||0}" min="0"></td>
+                    <td><input type="text" class="quick-input q-prod" value="${escapeHtml(cleanStr(tank.prod))}" maxlength="60"></td>
+                    <td><input type="text" class="quick-input q-batch" value="${escapeHtml(cleanStr(tank.batch))}" maxlength="40"></td>
                 `;
+                tbody.appendChild(tr);
             });
         }
 
         async function submitQuickFillMatrix() {
+            const rows = document.querySelectorAll('#quick-fill-tbody tr');
+            if(!rows.length) { toast("Nada para enviar", "erro"); return; }
+            if(!confirm(`Confirmar transmissão de ${rows.length} tanques? Esta ação substitui os valores atuais no servidor.`)) return;
+
             let tanksPayload = [];
-            document.querySelectorAll('#quick-fill-tbody tr').forEach(row => {
+            rows.forEach(row => {
                 tanksPayload.push({
                     id: row.getAttribute('data-id'),
-                    vol: Number(row.querySelector('.q-vol').value),
-                    prod: row.querySelector('.q-prod').value,
-                    batch: row.querySelector('.q-batch').value
+                    vol: Number(row.querySelector('.q-vol').value) || 0,
+                    prod: (row.querySelector('.q-prod').value || '').trim(),
+                    batch: (row.querySelector('.q-batch').value || '').trim()
                 });
             });
-            await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "quick_fill", tanks: tanksPayload }) });
-            alert("Matriz de tanques transmitida!"); fetchDatabase();
+
+            const btn = event && event.target ? event.target : null;
+            if(btn){ btn.disabled = true; btn.innerText = "Transmitindo..."; }
+            try {
+                let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "quick_fill", tanks: tanksPayload }) });
+                let data = await res.json().catch(() => ({}));
+                if(res.ok && data.success !== false) {
+                    toast("Matriz de tanques transmitida com sucesso", "ok");
+                    fetchDatabase();
+                } else {
+                    toast("Erro do servidor: " + (data.erro || "desconhecido"), "erro");
+                }
+            } catch(e) {
+                toast("Falha de rede ao transmitir", "erro");
+            } finally {
+                if(btn){ btn.disabled = false; btn.innerText = "Transmitir Todos os Tanques"; }
+            }
         }
 
         function renderCipPanel(panelId, lineData, idNum) {
             const panel = document.getElementById(panelId);
+            if(!panel) return;
             if (panel.innerHTML !== '' && panel.contains(document.activeElement)) return;
-            
+            const cip = lineData.cip || {};
+            const v = (x) => escapeHtml(cleanStr(x));
+
             panel.innerHTML = `
                 <div class="cip-card-title"><i class="fa-solid fa-soap"></i> Painel de Controle de CIP</div>
                 <div class="cip-field-group">
@@ -598,52 +732,77 @@
                             <option value="CIP ATIVO" ${lineData.status==='CIP ATIVO'?'selected':''}>CIP ATIVO</option>
                         </select>
                     </div>
-                    <div class="data-row"><span class="data-label">Produto na Linha</span><input type="text" id="inp-lprod" class="industrial-input" value="${cleanStr(lineData.prod)}"></div>
-                    <div class="data-row"><span class="data-label">Batch Ativo</span><input type="text" id="inp-lbatch" class="industrial-input" value="${cleanStr(lineData.batch)}"></div>
-                    <div class="data-row"><span class="data-label">Etapa Atual</span><input type="text" id="inp-etapa" class="industrial-input" value="${cleanStr(lineData.cip.etapa)}"></div>
-                    <div class="data-row"><span class="data-label">Agente Químico</span><input type="text" id="inp-quimico" class="industrial-input" value="${cleanStr(lineData.cip.quimico)}"></div>
+                    <div class="data-row"><span class="data-label">Produto na Linha</span><input type="text" id="inp-lprod" class="industrial-input" value="${v(lineData.prod)}" maxlength="60"></div>
+                    <div class="data-row"><span class="data-label">Batch Ativo</span><input type="text" id="inp-lbatch" class="industrial-input" value="${v(lineData.batch)}" maxlength="40"></div>
+                    <div class="data-row"><span class="data-label">Etapa Atual</span><input type="text" id="inp-etapa" class="industrial-input" value="${v(cip.etapa)}" maxlength="40"></div>
+                    <div class="data-row"><span class="data-label">Agente Químico</span><input type="text" id="inp-quimico" class="industrial-input" value="${v(cip.quimico)}" maxlength="40"></div>
                     <div class="cip-grid-half">
-                        <div class="data-row"><span class="data-label">Conc. Detergente</span><input type="text" id="inp-det" class="industrial-input" value="${cleanStr(lineData.cip.concDet)}"></div>
-                        <div class="data-row"><span class="data-label">Conc. Sanitizante</span><input type="text" id="inp-san" class="industrial-input" value="${cleanStr(lineData.cip.concSan)}"></div>
+                        <div class="data-row"><span class="data-label">Conc. Detergente</span><input type="text" id="inp-det" class="industrial-input" value="${v(cip.concDet)}" maxlength="20"></div>
+                        <div class="data-row"><span class="data-label">Conc. Sanitizante</span><input type="text" id="inp-san" class="industrial-input" value="${v(cip.concSan)}" maxlength="20"></div>
                     </div>
                     <div class="cip-grid-half">
-                        <div class="data-row"><span class="data-label">Horário Inicial</span><input type="text" id="inp-inicio" class="industrial-input" value="${cleanStr(lineData.cip.inicio)}"></div>
-                        <div class="data-row"><span class="data-label">Horário Final</span><input type="text" id="inp-fim" class="industrial-input" value="${cleanStr(lineData.cip.fim)}"></div>
+                        <div class="data-row"><span class="data-label">Horário Inicial</span><input type="time" id="inp-inicio" class="industrial-input" value="${v(cip.inicio)}"></div>
+                        <div class="data-row"><span class="data-label">Horário Final</span><input type="time" id="inp-fim" class="industrial-input" value="${v(cip.fim)}"></div>
                     </div>
-                    <button class="save-line-btn" onclick="submitLineEdit('${idNum}')">Transmitir Parâmetros da Linha</button>
+                    <button class="save-line-btn" data-linha="${escapeHtml(idNum)}">Transmitir Parâmetros da Linha</button>
                 </div>
             `;
+            const saveBtn = panel.querySelector('.save-line-btn');
+            if(saveBtn) saveBtn.addEventListener('click', () => submitLineEdit(idNum));
         }
 
         async function fetchAdminUsers() {
-            document.getElementById('users-table-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>';
+            const tbody = document.getElementById('users-table-tbody');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>';
             try {
                 let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "get_users" }) });
                 let data = await res.json();
-                
-                let tbody = document.getElementById('users-table-tbody');
                 tbody.innerHTML = '';
-                data.users.forEach(u => {
-                    let admTag = u.adm ? '<span style="color:var(--accent-green);font-weight:bold;">SIM</span>' : '<span style="color:var(--text-muted);">NÃO</span>';
-                    let actionBtn = u.adm 
-                        ? `<button class="admin-action-btn btn-remove-adm" onclick="toggleUserAdm('${u.br}', false)">Remover ADM</button>` 
-                        : `<button class="admin-action-btn btn-make-adm" onclick="toggleUserAdm('${u.br}', true)">Tornar ADM</button>`;
-                    
-                    if (u.br === "5758236") actionBtn = `<span style="font-size:11px; color:#555;">[MASTER]</span>`;
-
-                    tbody.innerHTML += `<tr>
-                        <td style="font-weight:bold;">${u.nome}</td>
-                        <td style="font-family:'Azeret Mono';">${u.br}</td>
+                (data.users || []).forEach(u => {
+                    const isAdm = (u.adm === true || u.adm === "TRUE" || u.adm === "true" || u.adm === "SIM" || u.adm === 1 || u.adm === "1");
+                    let admTag = isAdm
+                        ? '<span style="color:var(--accent-green);font-weight:bold;">SIM</span>'
+                        : '<span style="color:var(--text-muted);">NÃO</span>';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight:bold;">${escapeHtml(u.nome)}</td>
+                        <td style="font-family:'Azeret Mono';">${escapeHtml(u.br)}</td>
                         <td>${admTag}</td>
-                        <td>${actionBtn}</td>
-                    </tr>`;
+                        <td></td>
+                    `;
+                    const tdAcao = tr.lastElementChild;
+                    if (String(u.br) === ADMIN_BR_MASTER) {
+                        tdAcao.innerHTML = '<span style="font-size:11px; color:#555;">[MASTER]</span>';
+                    } else {
+                        const btn = document.createElement('button');
+                        btn.className = 'admin-action-btn ' + (isAdm ? 'btn-remove-adm' : 'btn-make-adm');
+                        btn.textContent = isAdm ? 'Remover ADM' : 'Tornar ADM';
+                        btn.addEventListener('click', () => toggleUserAdm(u.br, !isAdm));
+                        tdAcao.appendChild(btn);
+                    }
+                    tbody.appendChild(tr);
                 });
-            } catch (err) { console.log(err); }
+                if(!data.users || data.users.length === 0){
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Nenhum usuário cadastrado</td></tr>';
+                }
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--accent-red);">Erro ao carregar usuários</td></tr>';
+                console.error(err);
+            }
         }
 
         async function toggleUserAdm(br, status) {
-            await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "toggle_adm", br: br, novoAdm: status }) });
-            fetchAdminUsers();
+            if(!confirm(`${status ? 'Conceder' : 'Remover'} privilégios de administrador para BR ${br}?`)) return;
+            try {
+                let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type: "toggle_adm", br: br, novoAdm: status }) });
+                let data = await res.json().catch(() => ({}));
+                if(res.ok && data.success !== false) {
+                    toast("Permissão atualizada", "ok");
+                    fetchAdminUsers();
+                } else {
+                    toast("Erro: " + (data.erro || "operação falhou"), "erro");
+                }
+            } catch(e) { toast("Falha de rede", "erro"); }
         }
 
         function toggleMobileMenu() {
@@ -679,40 +838,63 @@
         }
 
         async function submitTankEdit() {
-            let payload = {
-                type: "tank", 
-                id: document.getElementById('panel-tank-id').value,
-                vol: Number(document.getElementById('panel-tank-vol').value),
-                prod: document.getElementById('panel-tank-prod').value,
-                batch: document.getElementById('panel-tank-batch').value,
-                status: document.getElementById('panel-tank-status').value
-            };
-            closeEditPanel();
-            await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
-            fetchDatabase();
+            const id = document.getElementById('panel-tank-id').value;
+            const vol = Number(document.getElementById('panel-tank-vol').value);
+            const prod = document.getElementById('panel-tank-prod').value.trim();
+            const batch = document.getElementById('panel-tank-batch').value.trim();
+            const status = document.getElementById('panel-tank-status').value;
+
+            if(isNaN(vol) || vol < 0) { toast("Volume inválido", "erro"); return; }
+
+            const btn = document.querySelector('#edit-side-panel .panel-btn[style*="accent-green"]');
+            if(btn){ btn.disabled = true; btn.innerText = "Salvando..."; }
+            try {
+                let res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ type:"tank", id, vol, prod, batch, status }) });
+                let data = await res.json().catch(() => ({}));
+                if(res.ok && data.success !== false){
+                    toast("Tanque atualizado", "ok");
+                    closeEditPanel();
+                    fetchDatabase();
+                } else {
+                    toast("Erro do servidor: " + (data.erro || "desconhecido"), "erro");
+                }
+            } catch(e){ toast("Falha de rede", "erro"); }
+            finally{ if(btn){ btn.disabled = false; btn.innerText = "Salvar Modificações"; } }
         }
 
         async function submitLineEdit(idNum) {
-            let payload = {
+            const payload = {
                 type: "linha", id: idNum,
                 status: document.getElementById('inp-status').value,
-                prod: document.getElementById('inp-lprod').value,
-                batch: document.getElementById('inp-lbatch').value,
-                etapa: document.getElementById('inp-etapa').value,
-                quimico: document.getElementById('inp-quimico').value,
+                prod: document.getElementById('inp-lprod').value.trim(),
+                batch: document.getElementById('inp-lbatch').value.trim(),
+                etapa: document.getElementById('inp-etapa').value.trim(),
+                quimico: document.getElementById('inp-quimico').value.trim(),
                 inicio: document.getElementById('inp-inicio').value,
                 fim: document.getElementById('inp-fim').value,
-                concDet: document.getElementById('inp-det').value,
-                concSan: document.getElementById('inp-san').value
+                concDet: document.getElementById('inp-det').value.trim(),
+                concSan: document.getElementById('inp-san').value.trim()
             };
-            
-            let fillerModule = document.querySelector('#view-linha' + idNum + ' .large-filler-module');
-            if (payload.status === 'CIP ATIVO') fillerModule.classList.add('mode-cip');
-            else fillerModule.classList.remove('mode-cip');
 
-            await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
-            fetchDatabase();
-            alert(`Parâmetros da Linha ${idNum} atualizados!`);
+            let fillerModule = document.querySelector('#view-linha' + idNum + ' .large-filler-module');
+            if (fillerModule) {
+                if (payload.status === 'CIP ATIVO') fillerModule.classList.add('mode-cip');
+                else fillerModule.classList.remove('mode-cip');
+            }
+
+            const btn = document.querySelector('#cip-panel-linha' + idNum + ' .save-line-btn');
+            if(btn){ btn.disabled = true; btn.innerText = "Transmitindo..."; }
+            try {
+                let res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+                let data = await res.json().catch(() => ({}));
+                if(res.ok && data.success !== false){
+                    toast(`Linha ${idNum} atualizada`, "ok");
+                    fetchDatabase();
+                } else {
+                    toast("Erro do servidor: " + (data.erro || "desconhecido"), "erro");
+                }
+            } catch(e){ toast("Falha de rede", "erro"); }
+            finally{ if(btn){ btn.disabled = false; btn.innerText = "Transmitir Parâmetros da Linha"; } }
         }
 
         function switchView(view) {
